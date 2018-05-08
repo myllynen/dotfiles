@@ -1,0 +1,35 @@
+! .Xresources
+
+#ifdef COLOR
+*customization: -color
+#endif
+
+xterm*background: Black
+xterm*foreground: Wheat
+xterm*cursorColor: Orchid
+xterm*scrollBar: true
+xterm*rightScrollBar: false
+! xterm*font: fixed
+! xterm*cursorBlink: true
+xterm*reverseWrap: true
+! xterm*scrollKey: true
+xterm*scrollTtyOutput: false
+xterm*saveLines: 10000
+xterm*deleteIsDEL: false
+! xterm*metaSendsEscape: true
+xterm*utf8Title: true
+
+urxvt*background: Black
+urxvt*foreground: Wheat
+urxvt*cursorColor: Orchid
+urxvt*scrollBar: true
+urxvt*scrollBar_right: false
+! urxvt*font: fixed
+! urxvt*cursorBlink: true
+! urxvt*reverseWrap: true
+! urxvt*scrollKey: true
+urxvt*scrollTtyOutput: false
+urxvt*saveLines: 10000
+! urxvt*deleteIsDEL: false
+! urxvt*metaSendsEscape: true
+! urxvt*utf8Title: true

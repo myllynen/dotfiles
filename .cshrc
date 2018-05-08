@@ -1,0 +1,216 @@
+# ~/.cshrc
+
+# Global definitions are before we are called from /etc/csh.cshrc
+
+# Locale environment from ~/.i18n
+if ( -f "$HOME/.i18n" ) then
+  eval `sed -ne 's|^[[:blank:]]*\([^#=]\{1,\}\)=\([^=]*\)|setenv \1 \2;|p' "$HOME/.i18n"`
+endif
+setenv TIME_STYLE long-iso
+
+# Disable GNU extensions
+#setenv POSIXLY_CORRECT y
+#setenv POSIX_ME_HARDER y
+
+# Do NOT set TZ with GNU libc
+if ( "${OSTYPE}" == 'linux' ) then
+  unsetenv TZ
+endif
+
+# Cygwin environment - add winsymlinks if needed to create shortcuts
+if ( "${OSTYPE}" == 'cygwin' ) then
+  setenv CYGWIN nodosfilewarning
+endif
+
+# Make sure some widely used variables are set
+setenv USERNAME "${USER}"
+setenv LOGNAME "${USER}"
+
+# Java
+if ( $?JAVA_HOME == 0 && -d /etc/alternatives/java_sdk ) then
+  setenv JAVA_HOME /etc/alternatives/java_sdk
+endif
+if ( $?JAVA_HOME == 0 && -d /etc/alternatives/jdk ) then
+  setenv JAVA_HOME /etc/alternatives/jdk
+endif
+if ( $?JAVA_HOME == 0 && -d /etc/alternatives/jre ) then
+  setenv JAVA_HOME /etc/alternatives/jre
+endif
+if ( $?JAVA_HOME == 1 ) then
+  setenv JAVACMD "${JAVA_HOME}/bin/java"
+endif
+#setenv CLASSPATH /
+
+# Path
+if ( $?PATH == 1 && -d "${HOME}/bin" ) then
+  setenv PATH "${PATH}:${HOME}/bin"
+endif
+if ( $?PATH == 1 && -d "${HOME}/.local/bin" ) then
+  setenv PATH "${PATH}:${HOME}/.local/bin"
+endif
+
+# Library path. Set LD_LIBRARY_PATH only if you REALLY know what you are doing
+#setenv LD_LIBRARY_PATH /usr/local/lib
+
+# Manual path. You may use /etc/man.conf instead of MANPATH on some systems
+if ( $?MANPATH == 1 && -d "${HOME}/man" ) then
+  setenv MANPATH "${MANPATH}:${HOME}/man"
+endif
+
+# Default umask
+umask 022
+
+#
+# Miscellaneous user preferences
+#
+setenv BROWSER firefox
+setenv EDITOR vi
+setenv FCEDIT vi
+setenv VISUAL vi
+setenv WINEDITOR vi
+if ( -x "`which less`" ) then
+  setenv PAGER less
+else
+  setenv PAGER more
+endif
+setenv LESS -CiMqs
+setenv LESSCHARSET utf-8
+setenv LESSHISTFILE -
+setenv LIBVIRT_DEFAULT_URI qemu:///system
+setenv MORE -c
+setenv PG -cn
+setenv READNULLCMD "${PAGER}"
+# setenv IRCNICK
+# setenv IRCSERVER
+
+
+
+# Set prompt
+set prompt = "%n@%m:%~% "
+
+# Options
+set autolist
+set correct = all
+set histdup = prev
+
+# Key bindings for Linux/BSD/X11/Solaris
+bindkey "^B"      backward-word
+bindkey "^F"      forward-word
+bindkey "^U"      backward-kill-line
+bindkey "^W"      backward-delete-word
+
+# History settings
+set histfile = "${HOME}/.history"
+set history  = 8000
+set savehist = (8000 merge)
+
+# Set terminal type - set only if you have problems
+#setenv TERM vt100
+
+# Eight bit character size
+tty -s >& /dev/null && stty cs8 >& /dev/null || :
+
+# Limits
+#limit coredumpsize 0
+set dirstack = 64
+#set listmax = 0
+
+# Watch for some friends
+#set watch = (10 any any)
+#set who = "%n %a %l from %m at %T"
+
+# Mail check interval
+#set mail = "60 ${MAIL}"
+
+# Don't logout automagically
+unset autologout
+
+# Aliases
+alias cd~ 'cd ~'
+alias ind 'indent -kr -nbbo -bl -bli0 -bls -nce -cli4 -nut -c0 -cd0 -cp0'
+alias l 'ls -l'
+alias la 'ls -al'
+alias lale 'ls -al | "${PAGER}"'
+alias lh 'last | head'
+alias ll 'ls -l'
+alias lsd 'ls -ld */'
+alias grep 'grep --color=tty'
+alias pico nano
+alias nano 'nano -A -S -w -x -z -e -b -N'
+alias lbigrpms 'rpm -qa --qf "%{size}\t%{name}\n" | sort -nr | "${PAGER}"'
+if ( -x "`which vim`" ) then
+  alias vi vim
+endif
+
+# Always play it safe when super-user
+if ( $uid == 0 ) then
+	alias cp 'cp -i'
+	alias mv 'mv -i'
+	alias rm 'rm -i'
+endif
+
+# Get rid of some stupid aliases/options which might be set
+unsetenv SSH_ASKPASS
+
+# ls(1) colors and other options
+eval `dircolors --csh >& /dev/null`
+if ( $?LS_COLORS == 0 ) then
+  setenv LS_COLORS "no=00:fi=00:di=01;34:ln=01;36:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arj=01;31:*.taz=01;31:*.lzh=01;31:*.zip=01;31:*.z=01;31:*.Z=01;31:*.gz=01;31:*.bz2=01;31:*.xz=01;31:*.deb=01;31:*.rpm=01;31:*.jpg=01;35:*.png=01;35:*.gif=01;35:*.bmp=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.png=01;35:*.mpg=01;35:*.avi=01;35:*.fli=01;35:*.gl=01;35:*.dl=01;35:"
+endif
+if ( -f /etc/DIR_COLORS ) then
+  setenv COLORS /etc/DIR_COLORS
+endif
+switch ( "${OSTYPE}" )
+	case gnu:
+	case linux:
+	case cygwin:
+		alias ls 'ls -h --literal --show-control-chars --color=auto'
+		breaksw
+	case darwin:
+	case freebsd:
+		alias ls 'ls -G -h'
+		# GNU ls style colors
+		setenv LSCOLORS "ExGxFxdxCxDxDxCxCxExEx"
+		# Expect xterm to support colors
+		if ( "x${TERM}" = 'xxterm' ) then
+			setenv TERM xterm-color
+		endif
+		breaksw
+	case netbsd:
+	case openbsd:
+	case solaris:
+		alias ls 'ls -F -h'
+		breaksw
+endsw
+
+# less
+if ( -x "`which lesspipe.sh`" ) then
+  setenv LESSOPEN "| lesspipe.sh %s"
+endif
+
+# Completion control
+if ( -f /etc/csh_completion ) then
+  source /etc/csh_completion
+endif
+
+# Terminal title
+if ( $?TERM == 0 ) then
+  setenv TERM NONE
+endif
+switch ( "${TERM}" )
+	case "cygwin*":
+		set prompt = "%{\033];%n@%m:%~\007%}%n@%m:%~% "
+		breaksw
+	case "gnome*":
+	case putty:
+	case "*rxvt*":
+	case "*xterm*":
+		set prompt = "%{\033]0;%n@%m:%~\007%}%n@%m:%~% "
+		breaksw
+	case "konsole*":
+		set prompt = "%{\033]30;%n@%m:%~\007%}%n@%m:%~% "
+		breaksw
+	case "screen*":
+		set prompt = "%{\033k%n@%m:%~\033\\%}%n@%m:%~% "
+		breaksw
+endsw

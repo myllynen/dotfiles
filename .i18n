@@ -1,0 +1,8 @@
+# Locale environment
+LANG=en_US.UTF-8
+LC_COLLATE=C
+LC_CTYPE=fi_FI.UTF-8
+LC_MEASUREMENT=C
+LC_PAPER=C
+# Adjust this manually with the C shell
+[[ "$OSTYPE" = *gnu* ]] && LC_TIME=en_DK.UTF-8 || LC_TIME=C

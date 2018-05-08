@@ -1,0 +1,8 @@
+! Uncomment to avoid ISO_Left_Tab with Shift+Tab
+keycode 23 = Tab Tab
+
+! Uncomment to use convenient Escape mapping with Finnish keyboard
+!keycode 35 = Escape dead_circumflex NoSymbol NoSymbol dead_tilde
+
+! Uncomment to avoid nobreakspace with AltGr+Space
+keycode 65 = space space NoSymbol NoSymbol space nobreakspace
