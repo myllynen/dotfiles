@@ -3,6 +3,9 @@
 # Do .bashrc so that common settings are always set
 [[ -f "${HOME}/.bashrc" ]] && . "${HOME}/.bashrc" || :
 
+# Don't bother further without a real TERM
+[[ -z "$TERM" || "$TERM" = "dumb" ]] && return
+
 # Use --clear option for additional security
 [[ -x "`which keychain 2>/dev/null`" && -f "${HOME}/.ssh/id_rsa" ]] && \
 keychain --nogui --nocolor "${HOME}/.ssh/id_rsa" > /dev/null 2>&1 && \

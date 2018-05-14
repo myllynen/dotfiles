@@ -1,6 +1,6 @@
 # /etc/zlogin and ~/.zlogin are sourced in login shells
 
-# Don't bother without a real TERM
+# Don't bother further without a real TERM
 [[ -z "$TERM" || "$TERM" = "dumb" ]] && return
 
 # Use --clear option for additional security
