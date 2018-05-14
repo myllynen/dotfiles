@@ -34,20 +34,26 @@ export MAIL=${MAIL:-/var/mail/$USERNAME}
 [[ -z "$JAVA_HOME" && -d /etc/alternatives/jre ]] && export JAVA_HOME=/etc/alternatives/jre
 [[ -n "$JAVA_HOME" ]] && export JAVACMD="$JAVA_HOME/bin/java"
 
-# Path. Trust the admin to set it up properly
-[[ -d "$HOME/bin" ]] && export PATH="$PATH:$HOME/bin"
-[[ -d "$HOME/.local/bin" ]] && export PATH="$PATH:$HOME/.local/bin"
+# Python
+#export -TU PYTHONPATH="$HOME/.local/lib/python3.4/site-packages${PYTHONPATH:+:$PYTHONPATH}" pythonpath
+export -TU PYTHONPATH="${${(@s/ /):-"$(print $HOME/.local/lib/python*/site-packages(/N^M))"}[-1]}${PYTHONPATH:+:$PYTHONPATH}" pythonpath
+
+# Path
+[[ -d "$HOME/.local/bin" ]] && export PATH="$HOME/.local/bin:$PATH"
+[[ -d "$HOME/bin" ]] && export PATH="$HOME/bin:$PATH"
 
 # Library path. Set LD_LIBRARY_PATH only if you REALLY know what you are doing
 #export LD_LIBRARY_PATH=/usr/local/lib
 
 # Manual path. You may use /etc/man.conf instead of MANPATH on some systems
-[[ -n "$MANPATH" && -d "$HOME/man" ]] && export MANPATH="$MANPATH:$HOME/man"
+[[ -n "$MANPATH" && -d "$HOME/.local/share/man" ]] && export MANPATH="$HOME/.local/share/man/$MANPATH"
+[[ -n "$MANPATH" && -d "$HOME/man" ]] && export MANPATH="$HOME/man:$MANPATH"
 
 # Clean up paths, save :: in MANPATH
 path=($^path(N^M))
 [[ -n "$MANPATH" ]] && export MANPATH=${${MANPATH//::/:/:}/%:/:/}
 [[ -n "$MANPATH" ]] && manpath=($^manpath(N^M))
+pythonpath=($^pythonpath(N^M))
 # Remove duplicate and trailing slashes
 setopt EXTENDED_GLOB
 path=(${${path//\/##/\/}%/})
@@ -55,8 +61,9 @@ path=(${${path//\/##/\/}%/})
 unsetopt EXTENDED_GLOB
 [[ -n "$MANPATH" ]] && export MANPATH=${${MANPATH//:\/:/::}/%\/}
 
-# Remove duplicate directories
-typeset -U path manpath
+typeset -U path manpath pythonpath
+[[ -z "$MANPATH" ]] && unset MANPATH
+[[ -z "$PYTHONPATH" ]] && unset PYTHONPATH
 
 # Default umask
 umask 022
