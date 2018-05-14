@@ -1,10 +1,10 @@
 # ~/.cshrc
 
-# Global definitions are before we are called from /etc/csh.cshrc
+# Global definitions are always sourced from /etc/csh.cshrc
 
 # Locale environment from ~/.i18n
 if ( -f "$HOME/.i18n" ) then
-  eval `sed -ne 's|^[[:blank:]]*\([^#=]\{1,\}\)=\([^=]*\)|setenv \1 \2;|p' "$HOME/.i18n"`
+	eval `sed -ne 's|^[[:blank:]]*\([^#=]\{1,\}\)=\([^=]*\)|setenv \1 \2;|p' "$HOME/.i18n"`
 endif
 setenv TIME_STYLE long-iso
 
@@ -14,47 +14,58 @@ setenv TIME_STYLE long-iso
 
 # Do NOT set TZ with GNU libc
 if ( "${OSTYPE}" == 'linux' ) then
-  unsetenv TZ
+	unsetenv TZ
 endif
 
 # Cygwin environment - add winsymlinks if needed to create shortcuts
 if ( "${OSTYPE}" == 'cygwin' ) then
-  setenv CYGWIN nodosfilewarning
+	setenv CYGWIN nodosfilewarning
 endif
 
 # Make sure some widely used variables are set
 setenv USERNAME "${USER}"
 setenv LOGNAME "${USER}"
+if ( $?MAIL == 0 ) then
+	setenv MAIL "/var/mail/${USER}"
+endif
 
 # Java
 if ( $?JAVA_HOME == 0 && -d /etc/alternatives/java_sdk ) then
-  setenv JAVA_HOME /etc/alternatives/java_sdk
-endif
-if ( $?JAVA_HOME == 0 && -d /etc/alternatives/jdk ) then
-  setenv JAVA_HOME /etc/alternatives/jdk
+	setenv JAVA_HOME /etc/alternatives/java_sdk
 endif
 if ( $?JAVA_HOME == 0 && -d /etc/alternatives/jre ) then
-  setenv JAVA_HOME /etc/alternatives/jre
+	setenv JAVA_HOME /etc/alternatives/jre
 endif
 if ( $?JAVA_HOME == 1 ) then
-  setenv JAVACMD "${JAVA_HOME}/bin/java"
+	setenv JAVACMD "${JAVA_HOME}/bin/java"
 endif
-#setenv CLASSPATH /
+
+# Python
+if ( -d "${HOME}/.local/lib/python3.4/site-packages" ) then
+	if ( $?PYTHONPATH == 1 ) then
+		setenv PYTHONPATH "${HOME}/.local/lib/python3.4/site-packages:${PYTHONPATH}"
+	else
+		setenv PYTHONPATH "${HOME}/.local/lib/python3.4/site-packages"
+	endif
+endif
 
 # Path
-if ( $?PATH == 1 && -d "${HOME}/bin" ) then
-  setenv PATH "${PATH}:${HOME}/bin"
-endif
 if ( $?PATH == 1 && -d "${HOME}/.local/bin" ) then
-  setenv PATH "${PATH}:${HOME}/.local/bin"
+	setenv PATH "${HOME}/.local/bin:${PATH}"
+endif
+if ( $?PATH == 1 && -d "${HOME}/bin" ) then
+	setenv PATH "${HOME}/bin:${PATH}"
 endif
 
 # Library path. Set LD_LIBRARY_PATH only if you REALLY know what you are doing
 #setenv LD_LIBRARY_PATH /usr/local/lib
 
 # Manual path. You may use /etc/man.conf instead of MANPATH on some systems
+if ( $?MANPATH == 1 && -d "${HOME}/.local/share/man" ) then
+	setenv MANPATH "${HOME}/.local/share/man:${MANPATH}"
+endif
 if ( $?MANPATH == 1 && -d "${HOME}/man" ) then
-  setenv MANPATH "${MANPATH}:${HOME}/man"
+	setenv MANPATH "${HOME}/man:${MANPATH}"
 endif
 
 # Default umask
@@ -69,9 +80,9 @@ setenv FCEDIT vi
 setenv VISUAL vi
 setenv WINEDITOR vi
 if ( -x "`which less`" ) then
-  setenv PAGER less
+	setenv PAGER less
 else
-  setenv PAGER more
+	setenv PAGER more
 endif
 setenv LESS -CiMqs
 setenv LESSCHARSET utf-8
@@ -135,11 +146,10 @@ alias lh 'last | head'
 alias ll 'ls -l'
 alias lsd 'ls -ld */'
 alias grep 'grep --color=tty'
-alias pico nano
-alias nano 'nano -A -S -w -x -z -e -b -N'
+alias nano 'nano -A -M -N -S -c -w -x -z'
 alias lbigrpms 'rpm -qa --qf "%{size}\t%{name}\n" | sort -nr | "${PAGER}"'
 if ( -x "`which vim`" ) then
-  alias vi vim
+	alias vi vim
 endif
 
 # Always play it safe when super-user
@@ -155,10 +165,7 @@ unsetenv SSH_ASKPASS
 # ls(1) colors and other options
 eval `dircolors --csh >& /dev/null`
 if ( $?LS_COLORS == 0 ) then
-  setenv LS_COLORS "no=00:fi=00:di=01;34:ln=01;36:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arj=01;31:*.taz=01;31:*.lzh=01;31:*.zip=01;31:*.z=01;31:*.Z=01;31:*.gz=01;31:*.bz2=01;31:*.xz=01;31:*.deb=01;31:*.rpm=01;31:*.jpg=01;35:*.png=01;35:*.gif=01;35:*.bmp=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.png=01;35:*.mpg=01;35:*.avi=01;35:*.fli=01;35:*.gl=01;35:*.dl=01;35:"
-endif
-if ( -f /etc/DIR_COLORS ) then
-  setenv COLORS /etc/DIR_COLORS
+	setenv LS_COLORS 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.Z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:'
 endif
 switch ( "${OSTYPE}" )
 	case gnu:
@@ -169,7 +176,8 @@ switch ( "${OSTYPE}" )
 	case darwin:
 	case freebsd:
 		alias ls 'ls -G -h'
-		# GNU ls style colors
+		setenv CLICOLOR yes
+		# GNU ls(1) style colors
 		setenv LSCOLORS "ExGxFxdxCxDxDxCxCxExEx"
 		# Expect xterm to support colors
 		if ( "x${TERM}" = 'xxterm' ) then
@@ -185,24 +193,24 @@ endsw
 
 # less
 if ( -x "`which lesspipe.sh`" ) then
-  setenv LESSOPEN "| lesspipe.sh %s"
+	setenv LESSOPEN "| lesspipe.sh %s"
 endif
 
 # Completion control
 if ( -f /etc/csh_completion ) then
-  source /etc/csh_completion
+	source /etc/csh_completion
 endif
 
 # Terminal title
 if ( $?TERM == 0 ) then
-  setenv TERM NONE
+	setenv TERM dumb
 endif
 switch ( "${TERM}" )
 	case "cygwin*":
 		set prompt = "%{\033];%n@%m:%~\007%}%n@%m:%~% "
 		breaksw
 	case "gnome*":
-	case putty:
+	case "putty":
 	case "*rxvt*":
 	case "*xterm*":
 		set prompt = "%{\033]0;%n@%m:%~\007%}%n@%m:%~% "
