@@ -128,6 +128,7 @@ alias ll='ls -l'
 alias lsd='ls -ld [^.]*/'
 alias grep='grep --color=tty'
 alias nano='nano -A -M -N -S -c -w -x -z'
+#alias wget='wget --hsts-file=/dev/null'
 alias lbigrpms='rpm -qa --qf "%{size}\t%{name}\n" | sort -nr | $PAGER'
 [[ -x "`which vim > /dev/null 2>&1`" ]] && alias vi=vim
 
