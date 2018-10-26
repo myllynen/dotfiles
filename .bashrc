@@ -61,7 +61,7 @@ export FCEDIT=vi
 export VISUAL=vi
 export WINEDITOR=vi
 [[ -x "`which less 2>/dev/null`" ]] && export PAGER=less || export PAGER=more
-export LESS=-CiMqs
+export LESS=-CiMqRs
 export LESSCHARSET=utf-8
 export LESSHISTFILE=-
 export LIBVIRT_DEFAULT_URI=qemu:///system

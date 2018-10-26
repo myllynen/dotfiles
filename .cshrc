@@ -84,7 +84,7 @@ if ( -x "`which less`" ) then
 else
 	setenv PAGER more
 endif
-setenv LESS -CiMqs
+setenv LESS -CiMqRs
 setenv LESSCHARSET utf-8
 setenv LESSHISTFILE -
 setenv LIBVIRT_DEFAULT_URI qemu:///system
