@@ -685,3 +685,33 @@ in
 		preexec () { local CMD=${1//\%/%%}; print -Pn "\033k%n@%m:%~ <$CMD>\033\\" }
 		;;
 esac
+
+# Git integration
+setopt PROMPT_SUBST
+autoload -Uz vcs_info
+autoload -Uz add-zsh-hook
+add-zsh-hook precmd vcs_info
+zstyle ':vcs_info:*' enable git
+zstyle ':vcs_info:*' formats "[%16<…<%b%<<|%m%u%c]"
+zstyle ':vcs_info:*' actionformats "[%12<…<%p%<<(%a)%m%u%c]"
+zstyle ':vcs_info:*' patch-format '%6<…<%p%<<(%n applied)'
+RPROMPT='${vcs_info_msg_0_}'
+
+# Display current commits
+zstyle ':vcs_info:git+post-backend:*' hooks git-status-commits
+function +vi-git-status-commits () {
+	local q="@{upstream}...HEAD"
+	[[ "${gitbranch}" != "master" ]] && q="master..."
+	local -a x; x=($(git rev-list --left-right --count $q 2> /dev/null))
+	(( $x[1] )) && hook_com[misc]+="↓$x[1]"
+	(( $x[2] )) && hook_com[misc]+="↑$x[2]"
+	return 0
+}
+
+# Display current changes
+zstyle ':vcs_info:git*+set-message:*' hooks git-status-changes
+function +vi-git-status-changes () {
+        local -A x; x=($(git status --porcelain 2> /dev/null))
+	hook_com[staged]+="${${(ks::u)x}// }"
+	return 0
+}
