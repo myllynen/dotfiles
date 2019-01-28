@@ -3,14 +3,14 @@
 # Shell functions
 setenv () { export "$1"="$2" }	# csh compatibility
 
-# Set prompts
+# Prompt
 if [ $UID -ne 0 ]
 then
 	PROMPT='%n@%m:%~> '
 else
 	PROMPT='%n@%m:%~# '
 fi
-RPROMPT=''
+#RPROMPT=''
 
 # Options
 setopt \
@@ -124,7 +124,7 @@ alias grep='grep --color=tty'
 alias nano='nano -A -M -N -S -c -w -x -z'
 #alias wget='wget --hsts-file=/dev/null'
 alias lbigrpms='rpm -qa --qf "%{size}\t%{name}\n" | sort -nr | $PAGER'
-[[ -x "`whence vim`" ]] && alias vi=vim
+[[ -n ${commands[vim]} ]] && alias vi=vim
 unalias which > /dev/null 2>&1 || :
 
 # Always play it safe when super-user
@@ -163,7 +163,7 @@ in
 esac
 
 # less
-[[ -x "`whence lesspipe.sh`" ]] && export LESSOPEN="| lesspipe.sh %s"
+[[ -n ${commands[lesspipe.sh]} ]] && export LESSOPEN="| lesspipe.sh %s"
 
 # Functions
 
@@ -429,7 +429,7 @@ function killuser () {
 function {cd,dvd}-{blank,blank-full,burn-iso,checksum,eject,fixate,read-iso,write-dir,write-dir-close-disc} () {
 	# http://fy.chalmers.se/~appro/linux/DVD+RW/tools/win32/*.exe -> C:\Windows
 	local label msinfo ret=0 sess tgtdev
-	[[ ! -x "`whence cdrecord`" ]] && return 1
+	[[ -n ${commands[cdrecord]} ]] || return 1
 	[[ -z "$_cd_dev" && -z "$_dvd_dev" ]] && umount $(mount -t iso9660 2> /dev/null | awk '{print $1}' | tr '\n' ' ') > /dev/null 2>&1
 	[[ -z "$_cd_dev" ]] && _cd_dev=$(cdrecord --devices | awk -F "'" '/CD/ {print $2}' | head -n 1)
 	[[ -z "$_dvd_dev" ]] && _dvd_dev=$(cdrecord --devices | awk -F "'" '/DVD/ {print $2}' | head -n 1)
@@ -666,7 +666,7 @@ unset compctls
 zstyle ':completion:*:default' list-colors "${(s.:.)LS_COLORS}"
 
 # Terminal title
-case $TERM
+case "$TERM"
 in
 	cygwin*)
 		precmd () { print -Pn "\033];%n@%m:%~\007" }
