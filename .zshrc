@@ -184,7 +184,7 @@ function istext () {
 
 # Enable Unicode character insertion with Ctrl-U + <code> + Ctrl-U
 function zle_enable_unicode_insert () {
-	autoload insert-unicode-char
+	autoload -Uz insert-unicode-char
 	zle -N insert-unicode-char
 	bindkey ^U insert-unicode-char
 	echo "$0: bound Ctrl-U to insert-unicode-char"
@@ -430,7 +430,7 @@ function {cd,dvd}-{blank,blank-full,burn-iso,checksum,eject,fixate,read-iso,writ
 	# http://fy.chalmers.se/~appro/linux/DVD+RW/tools/win32/*.exe -> C:\Windows
 	local label msinfo ret=0 sess tgtdev
 	[[ ! -x "`whence cdrecord`" ]] && return 1
-	[[ -z "$_cd_dev" && -z "$_dvd_dev" ]] && umount $(mount -t iso9660 2>/dev/null | awk '{print $1}' | tr '\n' ' ') > /dev/null 2>&1
+	[[ -z "$_cd_dev" && -z "$_dvd_dev" ]] && umount $(mount -t iso9660 2> /dev/null | awk '{print $1}' | tr '\n' ' ') > /dev/null 2>&1
 	[[ -z "$_cd_dev" ]] && _cd_dev=$(cdrecord --devices | awk -F "'" '/CD/ {print $2}' | head -n 1)
 	[[ -z "$_dvd_dev" ]] && _dvd_dev=$(cdrecord --devices | awk -F "'" '/DVD/ {print $2}' | head -n 1)
 	if [ -z "$_dvd_dev" ]; then
@@ -515,7 +515,7 @@ function {cd,dvd}-{blank,blank-full,burn-iso,checksum,eject,fixate,read-iso,writ
 		cd-write-dir|cd-write-dir-close-disc)
 			local multi
 			[[ "$0" = "cd-write-dir" ]] && multi=-multi
-			msinfo=$(cdrecord -msinfo dev=$tgtdev 2>/dev/null)
+			msinfo=$(cdrecord -msinfo dev=$tgtdev 2> /dev/null)
 			if [ -n "$msinfo" ]; then
 				sess="-C $msinfo -M $tgtdev"
 			fi
@@ -541,7 +541,7 @@ function {cd,dvd}-{blank,blank-full,burn-iso,checksum,eject,fixate,read-iso,writ
 					compat=
 				fi
 			fi
-			msinfo=$(isosize $tdev 2>/dev/null || echo 0)
+			msinfo=$(isosize $tdev 2> /dev/null || echo 0)
 			[[ $msinfo -eq 0 ]] && sess=-Z || sess=-M
 			find "$1" -print | sort
 			echo "Enter disc label: "
@@ -652,7 +652,7 @@ function man () {
 }
 
 # Use compsys - overrides all compctl rules!
-autoload -U compinit
+autoload -Uz compinit
 [[ "$OSTYPE" != *cygwin* ]] && compinit || compinit -i
 zstyle -e ':completion:*' special-dirs '[[ $PREFIX = (../)#(|.|..) ]] && reply=(..)'
 zstyle ':completion:*' ignore-parents parent directory
