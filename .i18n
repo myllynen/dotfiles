@@ -1,4 +1,5 @@
 # Locale environment
+#LOCPATH=$HOME/.locale
 LANG=en_US.UTF-8
 LC_COLLATE=C
 LC_CTYPE=fi_FI.UTF-8
