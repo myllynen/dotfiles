@@ -1,5 +1,8 @@
 # /etc/zshrc and ~/.zshrc are sourced in interactive shells
 
+# Don't bother if sourced already
+(( $+functions[mktar] )) && return
+
 # Shell functions
 setenv () { export "$1"="$2" }	# csh compatibility
 
@@ -376,9 +379,9 @@ function rmws () {
 }
 
 function pst () {
-	local asc ptree="`whence pstree`"
+	local asc ptree="${commands[pstree]}"
 	[[ -n "$ptree" ]] && "$ptree" -A > /dev/null 2>&1 && asc=-A
-	[[ -z "$ptree" ]] && ptree="`whence proctree`"
+	[[ -z "$ptree" ]] && ptree="${commands[proctree]}"
 	[[ -z "$ptree" ]] && echo "$0: command not found" 1>&2 && return 1
 	[[ $# -eq 0 ]] && "$ptree" $asc | $PAGER || :
 	[[ $# -gt 0 ]] && "$ptree" $asc -p "$@" | $PAGER || :
@@ -683,9 +686,9 @@ in
 		precmd () { print -Pn "\033]30;%n@%m:%~\007" }
 		preexec () { local CMD=${1//\%/%%}; print -Pn "\033]30;%n@%m:%~ <$CMD>\007" }
 		;;
-	screen*)
-		precmd () { print -Pn "\033k%n@%m:%~\033\\" }
-		preexec () { local CMD=${1//\%/%%}; print -Pn "\033k%n@%m:%~ <$CMD>\033\\" }
+	screen*|tmux*)
+		precmd () { print -Pn "\033k%n@%m:%~\033\\" ; [[ -z "$TERMCAP" ]] && print -Pn '\033]2;%n@%m:%~\033\\' }
+		preexec () { local CMD=${1//\%/%%}; print -Pn "\033k%n@%m:%~ <$CMD>\033\\" ; [[ -z "$TERMCAP" ]] && print -Pn '\033]2;%n@%m:%~ <$CMD>\033\\' }
 		;;
 esac
 

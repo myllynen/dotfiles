@@ -1,5 +1,8 @@
 # /etc/zprofile and ~/.zprofile are run for login shells
 
+# Don't bother if sourced already
+[[ -n "$TIME_STYLE" ]] && return
+
 # Source /etc/profile like other shells using sh emulation mode
 _src_etc_profile() {
 	[[ "$OSTYPE" = *cygwin* ]] && . /etc/zprofile
@@ -36,7 +39,7 @@ export MAIL=${MAIL:-/var/mail/$USERNAME}
 [[ -n "$JAVA_HOME" ]] && export JAVACMD="$JAVA_HOME/bin/java"
 
 # Python
-#export -TU PYTHONPATH="$HOME/.local/lib/python3.4/site-packages${PYTHONPATH:+:$PYTHONPATH}" pythonpath
+#export -TU PYTHONPATH="$HOME/.local/lib/python3.6/site-packages${PYTHONPATH:+:$PYTHONPATH}" pythonpath
 export -TU PYTHONPATH="${${(@s/ /):-"$(print $HOME/.local/lib/python*/site-packages(/N^M))"}[-1]}${PYTHONPATH:+:$PYTHONPATH}" pythonpath
 
 # Path
@@ -77,7 +80,7 @@ export EDITOR=vi
 export FCEDIT=vi
 export VISUAL=vi
 export WINEDITOR=vi
-[[ -x "`whence less`" ]] && export PAGER=less || export PAGER=more
+[[ -n "${commands[less]}" ]] && export PAGER=less || export PAGER=more
 export LESS=-CiMqRs
 export LESSCHARSET=utf-8
 export LESSHISTFILE=-
