@@ -41,11 +41,11 @@ if ( $?JAVA_HOME == 1 ) then
 endif
 
 # Python
-if ( -d "${HOME}/.local/lib/python3.4/site-packages" ) then
+if ( -d "${HOME}/.local/lib/python3.6/site-packages" ) then
 	if ( $?PYTHONPATH == 1 ) then
-		setenv PYTHONPATH "${HOME}/.local/lib/python3.4/site-packages:${PYTHONPATH}"
+		setenv PYTHONPATH "${HOME}/.local/lib/python3.6/site-packages:${PYTHONPATH}"
 	else
-		setenv PYTHONPATH "${HOME}/.local/lib/python3.4/site-packages"
+		setenv PYTHONPATH "${HOME}/.local/lib/python3.6/site-packages"
 	endif
 endif
 
@@ -220,6 +220,10 @@ switch ( "${TERM}" )
 		set prompt = "%{\033]30;%n@%m:%~\007%}%n@%m:%~% "
 		breaksw
 	case "screen*":
+	case "tmux*":
 		set prompt = "%{\033k%n@%m:%~\033\\%}%n@%m:%~% "
+		if ( $?TERMCAP == 0 ) then
+			echo -n '\033]2;'$USER@${HOST}:$PWD'\033\\'
+		endif
 		breaksw
 endsw

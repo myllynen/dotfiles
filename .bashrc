@@ -1,5 +1,8 @@
 # ~/.bashrc
 
+# Don't bother if sourced already
+type -p mktar && return
+
 # Source global definitions
 if [ -f /etc/bashrc ]; then
 	. /etc/bashrc
@@ -36,7 +39,7 @@ export MAIL=${MAIL:-/var/mail/$USER}
 [[ -n "$JAVA_HOME" ]] && export JAVACMD="$JAVA_HOME/bin/java"
 
 # Python
-export PYTHONPATH="$HOME/.local/lib/python3.4/site-packages${PYTHONPATH:+:$PYTHONPATH}"
+export PYTHONPATH="$HOME/.local/lib/python3.6/site-packages${PYTHONPATH:+:$PYTHONPATH}"
 
 # Path
 [[ -d "$HOME/.local/bin" ]] && export PATH="$HOME/.local/bin:$PATH"
@@ -60,7 +63,7 @@ export EDITOR=vi
 export FCEDIT=vi
 export VISUAL=vi
 export WINEDITOR=vi
-[[ -x "`which less 2>/dev/null`" ]] && export PAGER=less || export PAGER=more
+type -P less > /dev/null && export PAGER=less || export PAGER=more
 export LESS=-CiMqRs
 export LESSCHARSET=utf-8
 export LESSHISTFILE=-
@@ -130,7 +133,7 @@ alias grep='grep --color=tty'
 alias nano='nano -A -M -N -S -c -w -x -z'
 #alias wget='wget --hsts-file=/dev/null'
 alias lbigrpms='rpm -qa --qf "%{size}\t%{name}\n" | sort -nr | $PAGER'
-[[ -x "`which vim > /dev/null 2>&1`" ]] && alias vi=vim
+type -P vim > /dev/null && alias vi=vim
 
 # Always play it safe when super-user
 if [ $UID -eq 0 ]
@@ -168,7 +171,7 @@ in
 esac
 
 # less
-[[ -x "`which lesspipe.sh 2>/dev/null`" ]] && export LESSOPEN="| lesspipe.sh %s"
+type -P lesspipe.sh > /dev/null && export LESSOPEN="| lesspipe.sh %s"
 
 # Functions
 
@@ -345,9 +348,9 @@ function rmws () {
 }
 
 function pst () {
-	local asc ptree="`which pstree 2>/dev/null`"
+	local asc ptree="`command -v pstree 2>/dev/null`"
 	[[ -n "$ptree" ]] && "$ptree" -A > /dev/null 2>&1 && asc=-A
-	[[ -z "$ptree" ]] && ptree="`which proctree 2>/dev/null`"
+	[[ -z "$ptree" ]] && ptree="`command -v proctree 2>/dev/null`"
 	[[ -z "$ptree" ]] && echo "$FUNCNAME: command not found" 1>&2 && return 1
 	[[ $# -eq 0 ]] && "$ptree" $asc || $PAGER || :
 	[[ $# -gt 0 ]] && "$ptree" $asc -p "$@" | $PAGER || :
@@ -412,7 +415,11 @@ in
 	konsole*)
 		PROMPT_COMMAND='echo -ne "\033]30;${USER}@${HOSTNAME%%.*}:${PWD/#$HOME/~}\007"'
 		;;
-	screen*)
-		PROMPT_COMMAND='echo -ne "\033k${USER}@${HOSTNAME%%.*}:${PWD/#$HOME/~}\033\\"'
+	screen*|tmux*)
+		function prompt_command () {
+			echo -ne "\033k${USER}@${HOSTNAME%%.*}:${PWD/#$HOME/~}\033\\"
+			[[ -z "$TERMCAP" ]] && echo -ne '\033]2;'${USER}@${HOSTNAME%%.*}':'${PWD/#$HOME/\~}'\033\\'
+		}
+		PROMPT_COMMAND=prompt_command
 		;;
 esac

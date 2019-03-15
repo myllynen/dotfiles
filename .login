@@ -1,7 +1,7 @@
 # ~/.login
 
 # Don't bother further without a real TERM
-if ( $?TERM == 1 && "${TERM}" != 'dumb' ) then
+if ( $?TERM == 1 && "${TERM}" != 'dumb' && $?TMUX == 0 ) then
 
 # Use --clear option for additional security
 if ( -x "`which keychain`" && -f "${HOME}/.ssh/id_rsa" ) then
