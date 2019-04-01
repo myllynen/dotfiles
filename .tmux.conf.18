@@ -1,0 +1,143 @@
+#
+# tmux(1) configuration - expects shell to set pane titles, see tmux(1)
+#
+
+# Testing
+bind r source ~/.tmux.conf \; display '~/.tmux.conf reloaded'
+
+# Base bindings
+unbind C-b
+set -g prefix C-j
+bind j send-prefix
+bind C-j last-window
+bind C-d detach-client
+bind b set-option status
+bind C-s setw synchronize-panes \; \
+    display "synchronize-panes toggled"
+
+bind | split-window -h
+bind _ split-window -v
+
+# Copy/paste
+bind e copy-mode
+bind P paste-buffer
+bind y run 'tmux set-buffer "$(xclip -o -sel p)"'
+bind Y run 'tmux set-buffer "$(xclip -o -sel c)"'
+bind -t vi-copy v begin-selection
+bind -t vi-copy r rectangle-toggle
+bind -t vi-copy y copy-pipe 'xclip -i -sel p'
+bind -t vi-copy Enter copy-pipe 'xclip -i -sel c'
+bind C-p run 'xclip -o -sel p | xclip -i -sel c > /dev/null'
+bind C-y run 'xclip -o -sel c | xclip -i -sel p > /dev/null'
+
+# Create 1+2 panes, horizontal layout
+bind C-w \
+    split-window -d -v -t 1 \; \
+    split-window -d -h -t 2
+# Create 1+2 panes, vertical layout
+bind C-q \
+    split-window -d -h -t 1 \; \
+    split-window -d -v -t 2
+# Create 2x2 panes, tiled
+bind C-a \
+    split-window -d -v -t 1 \; \
+    split-window -d -h -t 2 \; \
+    split-window -d -h -t 1
+
+# Mouse
+set -g mode-mouse off
+bind C-m \
+    set -g mode-mouse on \; \
+    set -g mouse-select-pane on \; \
+    set -g mouse-select-window on \; \
+    set -g mouse-resize-pane on \; \
+    set -g mouse-utf8 on \; \
+    display "mouse on"
+bind M-m \
+    set -g mode-mouse off \; \
+    set -g mouse-select-pane off \; \
+    set -g mouse-select-window off \; \
+    set -g mouse-resize-pane off \; \
+    set -g mouse-utf8 off \; \
+    display "mouse off"
+
+# Move windows
+bind < swap-window -t -1
+bind > swap-window -t +1
+
+# Navigation
+bind -n M-h previous-window
+bind -n M-l next-window
+bind -n M-j select-pane -t :.-
+bind -n M-k select-pane -t :.+
+#bind -n C-Left previous-window
+#bind -n C-Right next-window
+bind -n M-Left select-pane -L
+bind -n M-Right select-pane -R
+bind -n M-Down select-pane -D
+bind -n M-Up select-pane -U
+
+# Renumber windows on request only
+bind R move-window -r
+set -g renumber-windows off
+
+# Resize pane
+bind -n M-y resize-pane -L 2
+bind -n M-o resize-pane -R 2
+bind -n M-u resize-pane -D 1
+bind -n M-i resize-pane -U 1
+bind -n S-Left resize-pane -L 2
+bind -n S-Right resize-pane -R 2
+bind -n S-Down resize-pane -D 1
+bind -n S-Up resize-pane -U 1
+
+# Scrolling
+bind -n C-Up send-keys Up
+bind -n C-Down send-keys Down
+bind -n M-PageUp send-keys PageUp
+bind -n M-PageDown send-keys PageDown
+bind -n S-PageUp send-keys PageUp
+bind -n S-PageDown send-keys PageDown
+
+# Set permanent window titles (two steps on 1.8)
+bind , \
+    command-prompt -I '#W' "rename-window -- '%%'"
+bind + \
+    set -g set-titles-string '#S.#I.#P.#F - #(whoami)@#H - #W' \; \
+    setw -g window-status-current-format '#W' \; \
+    setw -g window-status-format '#W' \; \
+    setw allow-rename off
+
+# Settings
+set -g base-index 1
+set -s buffer-limit 5
+set -s escape-time 0
+set -g history-limit 10000
+set -s set-clipboard off
+set -g status-keys emacs
+setw -g aggressive-resize on
+setw -g allow-rename on
+setw -g automatic-rename off
+setw -g monitor-activity on
+setw -g pane-base-index 1
+
+# Theme
+set -g display-panes-time 2000
+set -g display-time 2000
+set -g message-bg '#FFFF00'
+set -g set-titles on
+set -g set-titles-string '#S.#I.#P.#F #T'
+set -g status-bg black
+set -g status-fg white
+set -g status-interval 5
+set -g status-position bottom
+set -g status-right " | %H:%M "
+setw -g clock-mode-style 24
+setw -g window-status-activity-fg default
+setw -g window-status-bell-bg red
+setw -g window-status-current-bg blue
+setw -g window-status-current-fg white
+setw -g window-status-current-format \
+    " #I #{pane_title}#{window_flags} "
+setw -g window-status-format \
+    " #I #{pane_title}#{window_flags} "
