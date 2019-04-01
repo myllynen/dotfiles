@@ -65,7 +65,6 @@ export VISUAL=vi
 export WINEDITOR=vi
 type -P less > /dev/null && export PAGER=less || export PAGER=more
 export LESS=-CiMqRs
-export LESSCHARSET=utf-8
 export LESSHISTFILE=-
 export LIBVIRT_DEFAULT_URI=qemu:///system
 export MORE=-c
