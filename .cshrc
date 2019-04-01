@@ -149,8 +149,9 @@ alias nano 'nano -A -M -N -S -c -w -x -z'
 #alias wget 'wget --hsts-file=/dev/null'
 alias lbigrpms 'rpm -qa --qf "%{size}\t%{name}\n" | sort -nr | "${PAGER}"'
 if ( -x "`which vim`" ) then
-	alias vi vim
+	alias vi 'vim -u ~/.vimrc'
 endif
+alias vim 'vim -u ~/.vimrc'
 
 # Always play it safe when super-user
 if ( $uid == 0 ) then

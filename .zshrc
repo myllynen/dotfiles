@@ -127,7 +127,8 @@ alias grep='grep --color=tty'
 alias nano='nano -A -M -N -S -c -w -x -z'
 #alias wget='wget --hsts-file=/dev/null'
 alias lbigrpms='rpm -qa --qf "%{size}\t%{name}\n" | sort -nr | $PAGER'
-[[ -n ${commands[vim]} ]] && alias vi=vim
+[[ -n ${commands[vim]} ]] && alias vi="vim -u ~/.vimrc"
+alias vim="vim -u ~/.vimrc"
 unalias which > /dev/null 2>&1 || :
 
 # Always play it safe when super-user
