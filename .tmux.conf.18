@@ -125,6 +125,7 @@ setw -g pane-base-index 1
 set -g display-panes-time 2000
 set -g display-time 2000
 set -g message-bg '#FFFF00'
+set -g message-fg black
 set -g set-titles on
 set -g set-titles-string '#S.#I.#P.#F #T'
 set -g status-bg black
@@ -133,8 +134,10 @@ set -g status-interval 5
 set -g status-position bottom
 set -g status-right " | %H:%M "
 setw -g clock-mode-style 24
-setw -g window-status-activity-fg default
-setw -g window-status-bell-bg red
+setw -g window-status-activity-bg black
+setw -g window-status-activity-fg white
+setw -g window-status-bell-bg white
+setw -g window-status-bell-fg red
 setw -g window-status-current-bg blue
 setw -g window-status-current-fg white
 setw -g window-status-current-format \
