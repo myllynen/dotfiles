@@ -673,6 +673,7 @@ unset compctls
 zstyle ':completion:*:default' list-colors "${(s.:.)LS_COLORS}"
 
 # Terminal title
+setopt PROMPT_SUBST
 case "$TERM"
 in
 	cygwin*)
