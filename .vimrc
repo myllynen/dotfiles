@@ -47,16 +47,20 @@ noremap! jk <Esc>
 " leader is minus
 let mapleader = "-"
 
-" reload configuration
-noremap <Leader>r :so ~/.vimrc<CR>:echo "~/.vimrc reloaded"<CR>
-
 " timeouts
 set ttimeout ttimeoutlen=500
+
+" reload configuration
+noremap <Leader>r :so ~/.vimrc<CR>:echo "~/.vimrc reloaded"<CR>
 
 " create swapfile directory on startup
 if !isdirectory($HOME . "/.cache/vim")
   call mkdir($HOME . "/.cache/vim", "p", 0700)
 endif
+
+" go to next/previous file
+nnoremap <Leader>n :bn<CR>
+nnoremap <Leader>p :bp<CR>
 
 " toggle mouse on or off
 nnoremap <Leader>m :exec &mouse != "" ? "set mouse=" : "set mouse=a"<CR>
@@ -126,7 +130,7 @@ if has("autocmd")
   " style based on file type
   autocmd FileType make setlocal noexpandtab shiftwidth=8
   autocmd FileType sh setlocal tabstop=2 shiftwidth=2 softtabstop=2
-  autocmd FileType yaml setlocal tabstop=2 shiftwidth=2 softtabstop=2
+  autocmd FileType yaml setlocal tabstop=2 shiftwidth=2 softtabstop=2 indentkeys-=0# indentkeys-=<:>
 
   " highlight trailing whitespace
   highlight ExtraWhitespace ctermbg=red guibg=red
