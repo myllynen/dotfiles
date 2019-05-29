@@ -46,6 +46,9 @@ bind C-a \
     split-window -d -h -t 2 \; \
     split-window -d -h -t 1
 
+# Display pane details
+bind Q display "Pane #{pane_index} - #{pane_current_command} : #{pane_width}x#{pane_height}"
+
 # Mouse
 set -g mode-mouse off
 bind C-m \
