@@ -13,7 +13,10 @@ fi
 
 # Locale environment from ~/.i18n
 [[ -f "$HOME/.i18n" ]] && . "$HOME/.i18n"
-[[ "$OSTYPE" = *cygwin* ]] && export LANG LC_COLLATE LC_CTYPE LC_TIME
+for cat in LANG LANGUAGE LC_ADDRESS LC_COLLATE LC_CTYPE LC_MEASUREMENT \
+    LC_MESSAGES LC_MONETARY LC_NAME LC_NUMERIC LC_PAPER LC_TELEPHONE LC_TIME; do
+	[[ -n ${!cat} ]] && export $cat || unset $cat
+done
 [[ -n "$LOCPATH" ]] && export LOCPATH
 export TIME_STYLE=long-iso
 
