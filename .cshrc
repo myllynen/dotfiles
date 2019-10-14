@@ -2,6 +2,9 @@
 
 # Global definitions are always sourced from /etc/csh.cshrc
 
+# Make OSTYPE like on other shells
+setenv OSTYPE "`uname -s | tr '[:upper:]' '[:lower:]'`"
+
 # Locale environment from ~/.i18n
 if ( -f "$HOME/.i18n" ) then
 	eval `sed -ne 's|^[[:blank:]]*\([^#=]\{1,\}\)=\([^=]*\)|setenv \1 \2;|p' "$HOME/.i18n"`
@@ -108,6 +111,8 @@ bindkey "^B"      backward-word
 bindkey "^F"      forward-word
 bindkey "^U"      backward-kill-line
 bindkey "^W"      backward-delete-word
+bindkey "\e[2~"   overwrite-mode
+bindkey "\e[3~"   delete-char
 
 # History settings
 set histfile = "${HOME}/.history"
@@ -181,7 +186,7 @@ switch ( "${OSTYPE}" )
 		# GNU ls(1) style colors
 		setenv LSCOLORS "ExGxFxdxCxDxDxCxCxExEx"
 		# Expect xterm to support colors
-		if ( "x${TERM}" = 'xxterm' ) then
+		if ( "x${TERM}" == 'xxterm' ) then
 			setenv TERM xterm-color
 		endif
 		breaksw
