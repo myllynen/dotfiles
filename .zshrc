@@ -62,7 +62,7 @@ bindkey '\e[2~'   overwrite-mode
 bindkey '\e[L'    overwrite-mode
 bindkey '\e[247z' overwrite-mode
 bindkey '\e[3~'   delete-char
-[[ "$OSTYPE" = *freebsd* || "$OSTYPE" = *solaris* ]] && bindkey '\C-?' delete-char
+[[ "$OSTYPE" = *freebsd* || "$OSTYPE" = *solaris* ]] && bindkey '\e?' delete-char
 bindkey '\e[4~'   end-of-line
 bindkey '\e[8~'   end-of-line
 bindkey '\e[F'    end-of-line
