@@ -113,6 +113,8 @@ bindkey "^U"      backward-kill-line
 bindkey "^W"      backward-delete-word
 bindkey "\e[2~"   overwrite-mode
 bindkey "\e[3~"   delete-char
+bindkey "\e[7~"   beginning-of-line
+bindkey "\e[8~"   end-of-line
 
 # History settings
 set histfile = "${HOME}/.history"
@@ -159,7 +161,7 @@ endif
 alias vim 'vim -u ~/.vimrc'
 
 # Always play it safe when super-user
-if ( $uid == 0 ) then
+if ( `id -u` == 0 ) then
 	alias cp 'cp -i'
 	alias mv 'mv -i'
 	alias rm 'rm -i'
