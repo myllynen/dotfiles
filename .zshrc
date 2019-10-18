@@ -624,38 +624,6 @@ then
 	compctl killall
 fi
 
-# Manual page completion
-function _man_glob () {
-	local a b manp
-	read -cA a
-	read -lA b
-	manp=`manpath 2> /dev/null` || manp=`echo "$MANPATH"`
-	if [[ "$a[2]" = [0-9nlpo](p|) ]] # && [[ -n "$a[3]" || "${(M)b% }" = " " ]]
-	then
-		reply=( ${^$(echo $manp | sed -e 's/:/ /g')}/{man,sman,cat}$a[2]/$1*(-N.:t) )
-	else
-		reply=( ${^$(echo $manp | sed -e 's/:/ /g')}/{man,sman,cat}[0-9nlpo]{,X,m}*/$1*(-N.:t) )
-	fi
-	reply=( ${reply%.[^0-9Xmnlpo]*} )
-	# Uncomment to strip trailing section names from reply
-	#reply=( ${reply%.[0-9Xmnlpo]*} )
-}
-compctl -K _man_glob -x 'C[-1,-P]' -m - \
-	'R[-*l*,;]' -g '*.(man|[0-9Xmnlpo](|[a-z]))' -- + -f -g '..' man
-
-# Accept man page names with trailing section names, e.g., man.1
-function man () {
-	local param sect test=${(M)@#*/} # File name probably contains a slash
-	if [[ -z "$test" ]] && [[ $# -lt 3 ]]
-	then
-		param=${(M)${${${(M)@%.[0-9Xmnlpo]*}#.}%pm}##[0-9Xmnlpo](p|)}
-		[[ -n "$param" ]] && [[ "$OSTYPE" = *solaris* ]] && sect=-s
-		command man $sect $param ${@%.[0-9Xmnlpo]*}
-	else
-		command man "$@"
-	fi
-}
-
 # Use local completions (if any)
 [[ -d $HOME/.zlocal ]] && fpath=($HOME/.zlocal $fpath)
 
@@ -671,7 +639,12 @@ eval noglob unset _comps'[{'${compctls}'}]'
 unset compctls
 
 # Completion colors
-zstyle ':completion:*:default' list-colors "${(s.:.)LS_COLORS}"
+zstyle ':completion:*:default'   list-colors "${(s.:.)LS_COLORS}"
+
+# Manual page completion
+zstyle ':completion:*:manuals'   separate-sections true
+zstyle ':completion:*:manuals.*' insert-sections   true
+zstyle ':completion:*:man:*'     menu yes select
 
 # Terminal title
 setopt PROMPT_SUBST
