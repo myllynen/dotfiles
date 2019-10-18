@@ -701,9 +701,9 @@ autoload -Uz vcs_info
 autoload -Uz add-zsh-hook
 add-zsh-hook precmd vcs_info
 zstyle ':vcs_info:*' enable git
-zstyle ':vcs_info:*' formats "[%16<…<%b%<<|%m%u%c]"
-zstyle ':vcs_info:*' actionformats "[%12<…<%p%<<(%a)%m%u%c]"
-zstyle ':vcs_info:*' patch-format '%6<…<%p%<<(%n applied)'
+zstyle ':vcs_info:*' formats       '[%16<…<%b%<<|%m%u%c]'
+zstyle ':vcs_info:*' actionformats '[%12<…<%p%<<(%a)%m%u%c]'
+zstyle ':vcs_info:*' patch-format  '%6<…<%p%<<(%n applied)'
 RPROMPT='${vcs_info_msg_0_}'
 
 # Display current commits
@@ -724,3 +724,6 @@ function +vi-git-status-changes () {
 	hook_com[staged]+="${${(ks::u)x}// }"
 	return 0
 }
+
+# Don't complete remote branches
+zstyle :completion::complete:git-checkout:argument-rest:headrefs command "git for-each-ref --format='%(refname)' refs/heads 2> /dev/null"
