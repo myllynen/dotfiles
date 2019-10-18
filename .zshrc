@@ -3,8 +3,8 @@
 # Don't bother if sourced already
 (( $+functions[mktar] )) && return
 
-# Shell functions
-setenv () { export "$1"="$2" }	# csh compatibility
+# csh compatibility
+setenv () { export "$1"="$2" }
 
 # Prompt
 if [ $UID -ne 0 ]
@@ -125,6 +125,7 @@ alias ll='ls -l'
 alias lsd='ls -ld *(/^M)'
 alias grep='grep --color=tty'
 alias nano='nano -A -M -N -S -c -w -x -z'
+alias reset="printf '\033\143'"
 #alias wget='wget --hsts-file=/dev/null'
 alias lbigrpms='rpm -qa --qf "%{size}\t%{name}\n" | sort -nr | $PAGER'
 [[ -n ${commands[vim]} ]] && alias vi="vim -u ~/.vimrc"

@@ -153,6 +153,7 @@ alias ll 'ls -l'
 alias lsd 'ls -ld */'
 alias grep 'grep --color=tty'
 alias nano 'nano -A -M -N -S -c -w -x -z'
+alias reset "printf '\033\143'"
 #alias wget 'wget --hsts-file=/dev/null'
 alias lbigrpms 'rpm -qa --qf "%{size}\t%{name}\n" | sort -nr | "${PAGER}"'
 if ( -x "`which vim`" ) then

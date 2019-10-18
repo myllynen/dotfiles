@@ -78,8 +78,8 @@ export READNULLCMD=$PAGER
 
 
 
-# Shell functions
-function setenv () { export "$1"="$2"; }	# csh compatibility
+# csh compatibility
+function setenv () { export "$1"="$2"; }
 
 # Set prompt
 if [ $UID -ne 0 ]
@@ -133,6 +133,7 @@ alias ll='ls -l'
 alias lsd='ls -ld [^.]*/'
 alias grep='grep --color=tty'
 alias nano='nano -A -M -N -S -c -w -x -z'
+alias reset="printf '\033\143'"
 #alias wget='wget --hsts-file=/dev/null'
 alias lbigrpms='rpm -qa --qf "%{size}\t%{name}\n" | sort -nr | $PAGER'
 type -P vim > /dev/null && alias vi='vim -u ~/.vimrc'
