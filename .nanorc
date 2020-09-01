@@ -1,0 +1,24 @@
+# ~/.nanorc
+
+set autoindent
+set constantshow
+#set multibuffer
+set noconvert
+set nohelp
+set nowrap
+set smarthome
+set smooth
+set suspendable
+set tabsize 4
+set tabstospaces
+set trimblanks
+set zap
+
+bind ^H justify main
+bind ^P chopwordleft all
+bind ^N chopwordright all
+bind ^F nextblock all
+bind ^B prevblock all
+bind M-1 cutfromcursor main
+bind M-2 undo main
+bind M-X flipnewbuffer all
