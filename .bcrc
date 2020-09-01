@@ -1,0 +1,23 @@
+# ~/.bcrc
+
+scale=4;
+
+define max(a, b) {
+  if (a > b) {
+    return a;
+  }
+  return b;
+}
+
+define min(a, b) {
+  if (a < b) {
+    return a;
+  }
+  return b;
+}
+
+define pow(a, b) {
+  if (scale(b) == 0) {
+    return a ^ b; }
+  return e(b*l(a));
+}
