@@ -132,12 +132,13 @@ alias lh='last | head'
 alias ll='ls -l'
 alias lsd='ls -ld [^.]*/'
 alias grep='grep --color=tty'
-alias nano='nano -A -M -N -S -c -w -x -z'
+alias nano='nano -A -E -M -N -T 4 -c -i -w -x -z -Z'
 alias reset="printf '\033\143'"
 #alias wget='wget --hsts-file=/dev/null'
 alias lbigrpms='rpm -qa --qf "%{size}\t%{name}\n" | sort -nr | $PAGER'
 type -P vim > /dev/null && alias vi='vim -u ~/.vimrc'
 alias vim="vim -u ~/.vimrc"
+alias bc='bc -l ~/.bcrc'
 
 # Always play it safe when super-user
 if [ $UID -eq 0 ]
