@@ -321,6 +321,14 @@ function _x2y () {
 	rm -f "$1.$$.$rand"
 }
 
+function jpg2pdf () {
+	mv "$1" "${1/.JPG/.jpg}" > /dev/null 2>&1
+	f="${1/.JPG/.jpg}"
+	convert -strip -auto-orient -quality 50% -resize 50% "$f" "${f/.jpg/-tmp.jpg}"
+	convert "${f/.jpg/-tmp.jpg}" "${f/.jpg/.pdf}"
+	rm -f "${f/.jpg/-tmp.jpg}"
+}
+
 function ps2mps () {
 	[[ $# -eq 0 ]] && echo "Usage: $FUNCNAME [--pages N] <infile>" 1>&2 && return 1
 	[[ ! -w . || ! -x . ]] && echo "$FUNCNAME: permission denied: `pwd`" 1>&2 && return 1
@@ -331,13 +339,36 @@ function ps2mps () {
 	psnup -pa4 -Pa4 -nup "$pages" "$1" "$1.multi.ps"
 }
 
-function txt2ps () {
-	[[ $# -eq 0 ]] && echo "Usage: $FUNCNAME [--lines N] <infile>" 1>&2 && return 1
-	[[ ! -w . || ! -x . ]] && echo "$FUNCNAME: permission denied: `pwd`" 1>&2 && return 1
+function pdfstrip () {
+	gs -sDEVICE=pdfwrite -dNOPAUSE -dQUIET -dBATCH -dFirstPage=1 -dLastPage=1 -sOutputFile="$1".tmp "$1"
+	mv "$1".tmp "$1"
+}
+
+function pdfpw () {
+	[[ ! -r "$1" ]] && echo "Usage: $0 <file.pdf>" 1>&2 && return 1
+	local old new
+	local enc_opts="-dKeyLength=128 -dEncryptionR=3"
+	echo "Enter current PDF password:"
+	read -s old
+	echo "Enter new PDF password:"
+	read -s new
+	[[ -z "$new" ]] && enc_opts=
+	echo -n "Writing \"new-$1\"... "
+	gs -q -dSAFER -dBATCH -dNOPAUSE -sDEVICE=pdfwrite -dPDFSETTINGS=/prepress -dPassThroughJPEGImages=true ${=enc_opts} -sPDFPassword="$old" -sOwnerPassword="$new" -sUserPassword="$new" -sOutputFile="new-$1" "$1" > /dev/null 2>&1
+	[[ $? -eq 0 ]] && echo "ok." || (rm -f "new-$1" ; echo "failed.")
+}
+
+function txt2pdf () { _txt2p txt2pdf "$@"; }
+function txt2ps () { _txt2p txt2ps "$@"; }
+function _txt2p () {
+	cmd=$0 ; shift
+	[[ $# -eq 0 ]] && echo "Usage: $0 [--lines N] <infile>" 1>&2 && return 1
+	[[ ! -w . || ! -x . ]] && echo "$0: permission denied: `pwd`" 1>&2 && return 1
 	local lines=75
 	[[ "$1" = "--lines" ]] && lines="$2" && shift 2
-	istext "$1" "$FUNCNAME: skipping" || return 1
-	enscript --no-header --font=Courier10 --no-job-header --indent=8 --lines-per-page="$lines" --newline=n --output="$1.ps" --portrait --tabsize=8 "$1"
+	istext "$1" "$0: skipping" || return 1
+	fmt=${cmd/txt2}
+	enscript --no-header --font=Courier10 --no-job-header --indent=8 --lines-per-page="$lines" --newline=n --output="$1.$fmt" --portrait --tabsize=8 "$1"
 }
 
 function rmws () {
@@ -350,6 +381,10 @@ function rmws () {
 	sed -e 's/[ 	]*$//g' < "$1" > "$FUNCNAME.$$.$rand"
 	cat "$FUNCNAME.$$.$rand" > "$1"
 	rm -f "$FUNCNAME.$$.$rand"
+}
+
+function tailc () {
+	tail -f "$@" | xargs -IL date +"%H:%M:%S L"
 }
 
 function pst () {

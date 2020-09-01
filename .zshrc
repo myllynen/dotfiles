@@ -323,6 +323,14 @@ function {dos2mac,dos2unix,mac2dos,mac2unix,unix2dos,unix2mac} () {
 	rm -f "$0.$$.$rand"
 }
 
+function jpg2pdf () {
+	mv "$1" "${1/.JPG/.jpg}" > /dev/null 2>&1
+	f="${1/.JPG/.jpg}"
+	convert -strip -auto-orient -quality 50% -resize 50% "$f" "${f/.jpg/-tmp.jpg}"
+	convert "${f/.jpg/-tmp.jpg}" "${f/.jpg/.pdf}"
+	rm -f "${f/.jpg/-tmp.jpg}"
+}
+
 function ps2mps () {
 	[[ $# -eq 0 ]] && echo "Usage: $0 [--pages N] <infile>" 1>&2 && return 1
 	[[ ! -w . || ! -x . ]] && echo "$0: permission denied: `pwd`" 1>&2 && return 1
@@ -331,23 +339,6 @@ function ps2mps () {
 	file "$1" | grep PostScript > /dev/null 2>&1
 	[[ $? -ne 0 ]] && echo "$0: skipping $1: not a PostScript document" 1>&2 && return 1
 	psnup -pa4 -Pa4 -nup "$pages" "$1" "$1.multi.ps"
-}
-
-function txt2ps () {
-	[[ $# -eq 0 ]] && echo "Usage: $0 [--lines N] <infile>" 1>&2 && return 1
-	[[ ! -w . || ! -x . ]] && echo "$0: permission denied: `pwd`" 1>&2 && return 1
-	local lines=75
-	[[ "$1" = "--lines" ]] && lines="$2" && shift 2
-	istext "$1" "$0: skipping" || return 1
-	enscript --no-header --font=Courier10 --no-job-header --indent=8 --lines-per-page="$lines" --newline=n --output="$1.ps" --portrait --tabsize=8 "$1"
-}
-
-function jpg2pdf () {
-	mv "$1" "${1/.JPG/.jpg}" > /dev/null 2>&1
-	f="${1/.JPG/.jpg}"
-	convert -strip -auto-orient -quality 50% -resize 50% "$f" "${f/.jpg/-tmp.jpg}"
-	convert "${f/.jpg/-tmp.jpg}" "${f/.jpg/.pdf}"
-	rm -f "${f/.jpg/-tmp.jpg}"
 }
 
 function pdfstrip () {
@@ -369,6 +360,16 @@ function pdfpw () {
 	[[ $? -eq 0 ]] && echo "ok." || (rm -f "new-$1" ; echo "failed.")
 }
 
+function {txt2pdf,txt2ps} () {
+	[[ $# -eq 0 ]] && echo "Usage: $0 [--lines N] <infile>" 1>&2 && return 1
+	[[ ! -w . || ! -x . ]] && echo "$0: permission denied: `pwd`" 1>&2 && return 1
+	local lines=75
+	[[ "$1" = "--lines" ]] && lines="$2" && shift 2
+	istext "$1" "$0: skipping" || return 1
+	fmt=${0/txt2}
+	enscript --no-header --font=Courier10 --no-job-header --indent=8 --lines-per-page="$lines" --newline=n --output="$1.$fmt" --portrait --tabsize=8 "$1"
+}
+
 function rmws () {
 	# Remove spaces and tabs from EOLs if exist
 	[[ $# -ne 1 ]] && echo "Usage: $0 <file>" 1>&2 && return 1
@@ -379,6 +380,10 @@ function rmws () {
 	sed -e 's/[ 	]*$//g' < "$1" > "$0.$$.$rand"
 	cat "$0.$$.$rand" > "$1"
 	rm -f "$0.$$.$rand"
+}
+
+function tailc () {
+	tail -f "$@" | xargs -IL date +"%H:%M:%S L"
 }
 
 function pst () {
