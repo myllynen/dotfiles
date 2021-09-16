@@ -7,7 +7,6 @@ set noconvert
 set nohelp
 set nowrap
 set smarthome
-set smooth
 set suspendable
 set tabsize 4
 set tabstospaces
