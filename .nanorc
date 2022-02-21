@@ -5,9 +5,9 @@ set constantshow
 #set multibuffer
 set noconvert
 set nohelp
-set nowrap
+set showcursor
 set smarthome
-set suspendable
+#set stateflags
 set tabsize 4
 set tabstospaces
 set trimblanks
@@ -20,4 +20,4 @@ bind ^F nextblock all
 bind ^B prevblock all
 bind M-1 cutfromcursor main
 bind M-2 undo main
-bind M-X flipnewbuffer all
+#bind M-X flipnewbuffer all

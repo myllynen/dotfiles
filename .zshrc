@@ -124,7 +124,7 @@ alias lh='last | head'
 alias ll='ls -l'
 alias lsd='ls -ld *(/^M)'
 alias grep='grep --color=tty'
-alias nano='nano -A -E -M -N -T 4 -c -i -w -x -z -Z'
+alias nano='nano -A -E -M -N -T 4 -Z -c -g -i -x'
 alias reset="printf '\033\143'"
 #alias wget='wget --hsts-file=/dev/null'
 alias lbigrpms='rpm -qa --qf "%{size}\t%{name}\n" | sort -nr | $PAGER'
