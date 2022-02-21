@@ -1,6 +1,6 @@
 # ~/.bcrc
 
-scale=4;
+scale=6;
 
 define max(a, b) {
   if (a > b) {
@@ -20,4 +20,12 @@ define pow(a, b) {
   if (scale(b) == 0) {
     return a ^ b; }
   return e(b*l(a));
+}
+
+define chg(a, b) {
+  return (b-a)/a*100;
+}
+
+define pct(a, b) {
+  return a*b/100;
 }
