@@ -361,13 +361,12 @@ function pdfpw () {
 }
 
 function {txt2pdf,txt2ps} () {
-	[[ $# -eq 0 ]] && echo "Usage: $0 [--lines N] <infile>" 1>&2 && return 1
+	[[ $# -eq 0 ]] && echo "Usage: $0 <infile>" 1>&2 && return 1
 	[[ ! -w . || ! -x . ]] && echo "$0: permission denied: `pwd`" 1>&2 && return 1
-	local lines=75
-	[[ "$1" = "--lines" ]] && lines="$2" && shift 2
 	istext "$1" "$0: skipping" || return 1
-	fmt=${0/txt2}
-	enscript --no-header --font=Courier10 --no-job-header --indent=8 --lines-per-page="$lines" --newline=n --output="$1.$fmt" --portrait --tabsize=8 "$1"
+	local fmt=${0/txt2}
+	enscript -BhR -f Times-Roman12 -i 4 -M A4 -N n -t "$1" -T 4 -o "$1.ps" "$1" 2>&1 | sed -e "s/ps$/$fmt/"
+	[[ $fmt = pdf ]] && ps2pdf "$1.ps" "$1.pdf" && rm -f "$1.ps" || :
 }
 
 function rmws () {
