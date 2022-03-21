@@ -18,7 +18,8 @@ define min(a, b) {
 
 define pow(a, b) {
   if (scale(b) == 0) {
-    return a ^ b; }
+    return a ^ b;
+  }
   return e(b*l(a));
 }
 
