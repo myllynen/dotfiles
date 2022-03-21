@@ -134,7 +134,7 @@ alias lsd='ls -ld [^.]*/'
 alias grep='grep --color=tty'
 alias nano='nano -A -E -M -N -T 4 -Z -c -g -i -x'
 alias reset="printf '\033\143'"
-#alias wget='wget --hsts-file=/dev/null'
+alias wget='wget --hsts-file=/dev/null'
 alias lbigrpms='rpm -qa --qf "%{size}\t%{name}\n" | sort -nr | $PAGER'
 type -P vim > /dev/null && alias vi='vim -u ~/.vimrc'
 alias vim="vim -u ~/.vimrc"
