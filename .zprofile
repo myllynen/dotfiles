@@ -90,5 +90,6 @@ export LIBVIRT_DEFAULT_URI=qemu:///system
 export MORE=-c
 export PG=-cn
 export READNULLCMD=$PAGER
+export SYSTEMD_LESS=$LESS
 # export IRCNICK=
 # export IRCSERVER=

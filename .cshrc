@@ -93,6 +93,7 @@ setenv LIBVIRT_DEFAULT_URI qemu:///system
 setenv MORE -c
 setenv PG -cn
 setenv READNULLCMD "${PAGER}"
+setenv SYSTEMD_LESS "${LESS}"
 # setenv IRCNICK
 # setenv IRCSERVER
 
@@ -155,6 +156,8 @@ alias grep 'grep --color=tty'
 alias nano 'nano -A -E -M -N -T 4 -Z -c -g -i -x'
 alias reset "printf '\033\143'"
 alias wget 'wget --hsts-file=/dev/null'
+alias systemctl 'systemctl -l -n 50'
+alias journalctl 'journalctl -l -n 50'
 alias lbigrpms 'rpm -qa --qf "%{size}\t%{name}\n" | sort -nr | "${PAGER}"'
 if ( -x "`which vim`" ) then
 	alias vi 'vim -u ~/.vimrc'
