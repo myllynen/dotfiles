@@ -8,6 +8,7 @@ set nohelp
 set showcursor
 set smarthome
 #set stateflags
+set suspendable
 set tabsize 4
 set tabstospaces
 set trimblanks
