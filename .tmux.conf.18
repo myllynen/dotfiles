@@ -149,3 +149,7 @@ setw -g window-status-current-format \
     " #I #{pane_title}#{window_flags} "
 setw -g window-status-format \
     " #I #{pane_title}#{window_flags} "
+
+# Locking
+#set -g lock-after-time 900
+#set -g lock-command vlock
