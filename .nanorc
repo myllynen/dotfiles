@@ -22,3 +22,5 @@ bind ^B prevblock all
 bind M-1 cutfromcursor main
 bind M-2 undo main
 #bind M-X flipnewbuffer all
+
+extendsyntax default color ,red "\s+$"
