@@ -10,7 +10,7 @@ set smarthome
 set smooth
 #set stateflags
 set suspend
-set tabsize 4
+set tabsize 2
 set tabstospaces
 #set trimblanks
 #set zap
