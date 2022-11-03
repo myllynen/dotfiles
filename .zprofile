@@ -79,10 +79,10 @@ umask 022
 # Miscellaneous user preferences
 #
 export BROWSER=firefox
-export EDITOR=nano
-export FCEDIT=$EDITOR
-export VISUAL=$EDITOR
-export WINEDITOR=$EDITOR
+export EDITOR=vi
+export FCEDIT=vi
+export VISUAL=vi
+export WINEDITOR=vi
 [[ -n "${commands[less]}" ]] && export PAGER=less || export PAGER=more
 export LESS=-CiMqRs
 export LESSHISTFILE=-

@@ -78,10 +78,10 @@ umask 022
 # Miscellaneous user preferences
 #
 setenv BROWSER firefox
-setenv EDITOR nano
-setenv FCEDIT "${EDITOR}"
-setenv VISUAL "${EDITOR}"
-setenv WINEDITOR "${EDITOR}"
+setenv EDITOR vi
+setenv FCEDIT vi
+setenv VISUAL vi
+setenv WINEDITOR vi
 if ( -x "`which less`" ) then
 	setenv PAGER less
 else
