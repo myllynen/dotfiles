@@ -664,20 +664,20 @@ setopt PROMPT_SUBST
 case "$TERM"
 in
 	cygwin*)
-		precmd () { print -Pn "\033];%n@%m:%~\007" }
-		preexec () { local CMD=${1//\%/%%}; print -Pn "\033];%n@%m:%~ <$CMD>\007" }
+		precmd () { print -Pn '\033];%n@%m:%~\007' }
+		preexec () { local CMD=${1//\%/%%}; print -Pn '\033];%n@%m:%~ <$CMD>\007' }
 		;;
 	gnome*|putty|*rxvt*|*xterm*)
-		precmd () { print -Pn "\033]0;%n@%m:%~\007" }
-		preexec () { local CMD=${1//\%/%%}; print -Pn "\033]0; %n@%m:%~ <$CMD>\007" }
+		precmd () { print -Pn '\033]0;%n@%m:%~\007' }
+		preexec () { local CMD=${1//\%/%%}; print -Pn '\033]0; %n@%m:%~ <$CMD>\007' }
 		;;
 	konsole*)
-		precmd () { print -Pn "\033]30;%n@%m:%~\007" }
-		preexec () { local CMD=${1//\%/%%}; print -Pn "\033]30;%n@%m:%~ <$CMD>\007" }
+		precmd () { print -Pn '\033]30;%n@%m:%~\007' }
+		preexec () { local CMD=${1//\%/%%}; print -Pn '\033]30;%n@%m:%~ <$CMD>\007' }
 		;;
 	screen*|tmux*)
-		precmd () { print -Pn "\033k%n@%m:%~\033\\" ; [[ -z "$TERMCAP" ]] && print -Pn '\033]2;%n@%m:%~\033\\' }
-		preexec () { local CMD=${1//\%/%%}; print -Pn "\033k%n@%m:%~ <$CMD>\033\\" ; [[ -z "$TERMCAP" ]] && print -Pn '\033]2;%n@%m:%~ <$CMD>\033\\' }
+		precmd () { print -Pn '\033k%n@%m:%~\033\\' ; [[ -z "$TERMCAP" ]] && print -Pn '\033]2;%n@%m:%~\033\\' }
+		preexec () { local CMD=${1//\%/%%}; print -Pn '\033k%n@%m:%~ <$CMD>\033\\' ; [[ -z "$TERMCAP" ]] && print -Pn '\033]2;%n@%m:%~ <$CMD>\033\\' }
 		;;
 esac
 
@@ -695,8 +695,9 @@ RPROMPT='${vcs_info_msg_0_}'
 # Display current commits
 zstyle ':vcs_info:git+post-backend:*' hooks git-status-commits
 function +vi-git-status-commits () {
+	local m=$(git branch -a | grep main > /dev/null 2>&1 && echo main || echo master)
 	local q="@{upstream}...HEAD"
-	[[ "${gitbranch}" != "master" ]] && q="master..."
+	[[ "${gitbranch}" != "$m" ]] && q="$m..."
 	local -a x; x=($(git rev-list --left-right --count $q 2> /dev/null))
 	(( $x[1] )) && hook_com[misc]+="↓$x[1]"
 	(( $x[2] )) && hook_com[misc]+="↑$x[2]"
@@ -706,7 +707,7 @@ function +vi-git-status-commits () {
 # Display current changes
 zstyle ':vcs_info:git*+set-message:*' hooks git-status-changes
 function +vi-git-status-changes () {
-        local -A x; x=($(git status --porcelain 2> /dev/null))
+	local -A x; x=($(git status --porcelain 2> /dev/null))
 	hook_com[staged]+="${${(ks::u)x}// }"
 	return 0
 }
