@@ -22,4 +22,5 @@ bind ^H justify main
 #bind ^B prevblock all
 #bind M-1 cutfromcursor main
 bind M-2 undo main
+bind M-4 whereis main
 #bind M-X flipnewbuffer all
