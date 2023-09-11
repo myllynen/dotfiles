@@ -9,9 +9,9 @@ setenv () { export "$1"="$2" }
 # Prompt
 if [ $UID -ne 0 ]
 then
-	PROMPT='%n@%m:%~> '
+	PROMPT='%F{green}%n@%m:%F{reset}%~> '
 else
-	PROMPT='%n@%m:%~# '
+	PROMPT='%F{red}%n@%m:%F{reset}%~# '
 fi
 #RPROMPT=''
 
@@ -690,7 +690,7 @@ zstyle ':vcs_info:*' enable git
 zstyle ':vcs_info:*' formats       '[%16<…<%b%<<|%m%u%c]'
 zstyle ':vcs_info:*' actionformats '[%12<…<%p%<<(%a)%m%u%c]'
 zstyle ':vcs_info:*' patch-format  '%6<…<%p%<<(%n applied)'
-RPROMPT='${vcs_info_msg_0_}'
+RPROMPT='%F{yellow}${vcs_info_msg_0_}%F{reset}'
 
 # Display current commits
 zstyle ':vcs_info:git+post-backend:*' hooks git-status-commits

@@ -85,9 +85,9 @@ function setenv () { export "$1"="$2"; }
 # Set prompt
 if [ $UID -ne 0 ]
 then
-	PS1='\u@\h:\w\$ '
+	PS1='\[\033[32m\]\u@\h:\[\033[00m\]\w\$ '
 else
-	PS1='\u@\h:\w# '
+	PS1='\[\033[31m\]\u@\h:\[\033[00m\]\w# '
 fi
 
 # Options

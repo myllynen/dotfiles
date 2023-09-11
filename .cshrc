@@ -100,7 +100,7 @@ setenv SYSTEMD_LESS "${LESS}"
 
 
 # Set prompt
-set prompt = "%n@%m:%~% "
+set prompt = "%{\033[32m%}%n@%m:%{\033[00m%}%~% "
 
 # Options
 set autolist
@@ -219,20 +219,20 @@ if ( $?TERM == 0 ) then
 endif
 switch ( "${TERM}" )
 	case "cygwin*":
-		set prompt = "%{\033];%n@%m:%~\007%}%n@%m:%~% "
+		set prompt = "%{\033];%n@%m:%~\007%}%{\033[32m%}%n@%m:%{\033[00m%}%~% "
 		breaksw
 	case "gnome*":
 	case "putty":
 	case "*rxvt*":
 	case "*xterm*":
-		set prompt = "%{\033]0;%n@%m:%~\007%}%n@%m:%~% "
+		set prompt = "%{\033]0;%n@%m:%~\007%}%{\033[32m%}%n@%m:%{\033[00m%}%~% "
 		breaksw
 	case "konsole*":
-		set prompt = "%{\033]30;%n@%m:%~\007%}%n@%m:%~% "
+		set prompt = "%{\033]30;%n@%m:%~\007%}%{\033[32m%}%n@%m:%{\033[00m%}%~% "
 		breaksw
 	case "screen*":
 	case "tmux*":
-		set prompt = "%{\033k%n@%m:%~\033\\%}%n@%m:%~% "
+		set prompt = "%{\033k%n@%m:%~\033\\%}%{\033[32m%}%n@%m:%{\033[00m%}%~% "
 		if ( $?TERMCAP == 0 ) then
 			echo -n '\033]2;'$USER@${HOST}:$PWD'\033\\'
 		endif
