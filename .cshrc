@@ -15,9 +15,9 @@ setenv TIME_STYLE long-iso
 #setenv POSIXLY_CORRECT y
 #setenv POSIX_ME_HARDER y
 
-# Do NOT set TZ with GNU libc
+# Timezone for user processes
 if ( "${OSTYPE}" == 'linux' ) then
-	unsetenv TZ
+	setenv TZ :/etc/localtime
 endif
 
 # Cygwin environment - add winsymlinks if needed to create shortcuts
