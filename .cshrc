@@ -2,12 +2,15 @@
 
 # Global definitions are always sourced from /etc/csh.cshrc
 
+# Ensure SHELL is always correctly set
+if ( $?SHELL == 0 || { eval 'if ! ( $SHELL =~ *csh* ) exit 0' } ) setenv SHELL "$0"
+
 # Make OSTYPE like on other shells
 setenv OSTYPE "`uname -s | tr '[:upper:]' '[:lower:]'`"
 
 # Locale environment from ~/.i18n
-if ( -f "$HOME/.i18n" ) then
-	eval `sed -ne 's|^[[:blank:]]*\([^#=]\{1,\}\)=\([^=]*\)|setenv \1 \2;|p' "$HOME/.i18n"`
+if ( -f "${HOME}/.i18n" ) then
+	eval `sed -ne 's|^[[:blank:]]*\([^#=]\{1,\}\)=\([^=]*\)|setenv \1 \2;|p' "${HOME}/.i18n"`
 endif
 setenv TIME_STYLE long-iso
 
@@ -44,11 +47,11 @@ if ( $?JAVA_HOME == 1 ) then
 endif
 
 # Python
-if ( -d "${HOME}/.local/lib/python3.6/site-packages" ) then
+if ( -d "${HOME}/.local/lib/python3.9/site-packages" ) then
 	if ( $?PYTHONPATH == 1 ) then
-		setenv PYTHONPATH "${HOME}/.local/lib/python3.6/site-packages:${PYTHONPATH}"
+		setenv PYTHONPATH "${HOME}/.local/lib/python3.9/site-packages:${PYTHONPATH}"
 	else
-		setenv PYTHONPATH "${HOME}/.local/lib/python3.6/site-packages"
+		setenv PYTHONPATH "${HOME}/.local/lib/python3.9/site-packages"
 	endif
 endif
 
@@ -234,7 +237,7 @@ switch ( "${TERM}" )
 	case "tmux*":
 		set prompt = "%{\033k%n@%m:%~\033\\%}%{\033[32m%}%n@%m:%{\033[00m%}%~% "
 		if ( $?TERMCAP == 0 ) then
-			echo -n '\033]2;'$USER@${HOST}:$PWD'\033\\'
+			echo -n '\033]2;'${USER}@${HOST}:${PWD}'\033\\'
 		endif
 		breaksw
 endsw

@@ -14,7 +14,7 @@ fi
 # Locale environment from ~/.i18n
 [[ -f "$HOME/.i18n" ]] && . "$HOME/.i18n"
 for cat in LANG LANGUAGE LC_ADDRESS LC_COLLATE LC_CTYPE LC_MEASUREMENT \
-    LC_MESSAGES LC_MONETARY LC_NAME LC_NUMERIC LC_PAPER LC_TELEPHONE LC_TIME; do
+		LC_MESSAGES LC_MONETARY LC_NAME LC_NUMERIC LC_PAPER LC_TELEPHONE LC_TIME; do
 	[[ -n ${!cat} ]] && export $cat || unset $cat
 done
 [[ -n "$LOCPATH" ]] && export LOCPATH
@@ -42,7 +42,7 @@ export MAIL=${MAIL:-/var/mail/$USER}
 [[ -n "$JAVA_HOME" ]] && export JAVACMD="$JAVA_HOME/bin/java"
 
 # Python
-export PYTHONPATH="$HOME/.local/lib/python3.6/site-packages${PYTHONPATH:+:$PYTHONPATH}"
+export PYTHONPATH="$HOME/.local/lib/python3.9/site-packages${PYTHONPATH:+:$PYTHONPATH}"
 
 # Path
 [[ -d "$HOME/.local/bin" ]] && export PATH="$HOME/.local/bin:$PATH"

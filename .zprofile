@@ -15,7 +15,7 @@ unset -f _src_etc_profile
 # Locale environment from ~/.i18n
 [[ -f "$HOME/.i18n" ]] && . "$HOME/.i18n"
 for cat in LANG LANGUAGE LC_ADDRESS LC_COLLATE LC_CTYPE LC_MEASUREMENT \
-    LC_MESSAGES LC_MONETARY LC_NAME LC_NUMERIC LC_PAPER LC_TELEPHONE LC_TIME; do
+		LC_MESSAGES LC_MONETARY LC_NAME LC_NUMERIC LC_PAPER LC_TELEPHONE LC_TIME; do
 	[[ -n ${(P)cat} ]] && export $cat || unset $cat
 done
 [[ -n "$LOCPATH" ]] && export LOCPATH || unset LOCPATH
@@ -42,7 +42,7 @@ export MAIL=${MAIL:-/var/mail/$USERNAME}
 [[ -n "$JAVA_HOME" ]] && export JAVACMD="$JAVA_HOME/bin/java"
 
 # Python
-#export -TU PYTHONPATH="$HOME/.local/lib/python3.6/site-packages${PYTHONPATH:+:$PYTHONPATH}" pythonpath
+#export -TU PYTHONPATH="$HOME/.local/lib/python3.9/site-packages${PYTHONPATH:+:$PYTHONPATH}" pythonpath
 export -TU PYTHONPATH="${${(@s/ /):-"$(print $HOME/.local/lib/python*/site-packages(/N^M))"}[-1]}${PYTHONPATH:+:$PYTHONPATH}" pythonpath
 
 # Path
