@@ -20,7 +20,7 @@ setenv TIME_STYLE long-iso
 
 # Timezone
 #if ( "${OSTYPE}" == 'linux' ) then
-#	unsetenv TZ
+#	setenv TZ :/etc/localtime
 #endif
 
 # Cygwin environment - add winsymlinks if needed to create shortcuts

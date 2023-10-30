@@ -25,7 +25,7 @@ export TIME_STYLE=long-iso
 #export POSIX_ME_HARDER=y
 
 # Timezone
-#[[ "$OSTYPE" = *gnu* ]] && unset TZ
+#[[ "$OSTYPE" = *gnu* ]] && export TZ=:/etc/localtime
 
 # Cygwin environment - add winsymlinks if needed to create shortcuts
 [[ "$OSTYPE" = *cygwin* ]] && export CYGWIN=nodosfilewarning
