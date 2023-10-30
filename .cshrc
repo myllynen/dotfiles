@@ -18,10 +18,10 @@ setenv TIME_STYLE long-iso
 #setenv POSIXLY_CORRECT y
 #setenv POSIX_ME_HARDER y
 
-# Timezone for user processes
-if ( "${OSTYPE}" == 'linux' ) then
-	setenv TZ :/etc/localtime
-endif
+# Timezone
+#if ( "${OSTYPE}" == 'linux' ) then
+#	unsetenv TZ
+#endif
 
 # Cygwin environment - add winsymlinks if needed to create shortcuts
 if ( "${OSTYPE}" == 'cygwin' ) then
