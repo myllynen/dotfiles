@@ -43,7 +43,6 @@ export MAIL=${MAIL:-/var/mail/$USERNAME}
 
 # Python
 #export -TU PYTHONPATH="$HOME/.local/lib/python3.9/site-packages${PYTHONPATH:+:$PYTHONPATH}" pythonpath
-export -TU PYTHONPATH="${${(@s/ /):-"$(print $HOME/.local/lib/python*/site-packages(/N^M))"}[-1]}${PYTHONPATH:+:$PYTHONPATH}" pythonpath
 
 # Path
 [[ -d "$HOME/.local/bin" ]] && export PATH="$HOME/.local/bin:$PATH"
@@ -60,7 +59,6 @@ export -TU PYTHONPATH="${${(@s/ /):-"$(print $HOME/.local/lib/python*/site-packa
 path=($^path(N^M))
 [[ -n "$MANPATH" ]] && export MANPATH=${${MANPATH//::/:/:}/%:/:/}
 [[ -n "$MANPATH" ]] && manpath=($^manpath(N^M))
-pythonpath=($^pythonpath(N^M))
 # Remove duplicate and trailing slashes
 setopt EXTENDED_GLOB
 path=(${${path//\/##/\/}%/})
@@ -68,9 +66,8 @@ path=(${${path//\/##/\/}%/})
 unsetopt EXTENDED_GLOB
 [[ -n "$MANPATH" ]] && export MANPATH=${${MANPATH//:\/:/::}/%\/}
 
-typeset -U path manpath pythonpath
+typeset -U path manpath
 [[ -z "$MANPATH" ]] && unset MANPATH
-[[ -z "$PYTHONPATH" ]] && unset PYTHONPATH
 
 # Default umask
 umask 022

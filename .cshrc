@@ -47,13 +47,13 @@ if ( $?JAVA_HOME == 1 ) then
 endif
 
 # Python
-if ( -d "${HOME}/.local/lib/python3.9/site-packages" ) then
-	if ( $?PYTHONPATH == 1 ) then
-		setenv PYTHONPATH "${HOME}/.local/lib/python3.9/site-packages:${PYTHONPATH}"
-	else
-		setenv PYTHONPATH "${HOME}/.local/lib/python3.9/site-packages"
-	endif
-endif
+#if ( -d "${HOME}/.local/lib/python3.9/site-packages" ) then
+#	if ( $?PYTHONPATH == 1 ) then
+#		setenv PYTHONPATH "${HOME}/.local/lib/python3.9/site-packages:${PYTHONPATH}"
+#	else
+#		setenv PYTHONPATH "${HOME}/.local/lib/python3.9/site-packages"
+#	endif
+#endif
 
 # Path
 if ( $?PATH == 1 && -d "${HOME}/.local/bin" ) then
