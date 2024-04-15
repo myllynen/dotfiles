@@ -56,7 +56,7 @@ export MAIL=${MAIL:-/var/mail/$USER}
 [[ -n "$MANPATH" && -d "$HOME/man" ]] && export MANPATH="$HOME/man:$MANPATH"
 
 # Default umask
-umask 022
+umask 027
 
 #
 # Miscellaneous user preferences

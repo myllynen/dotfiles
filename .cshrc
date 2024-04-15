@@ -75,7 +75,7 @@ if ( $?MANPATH == 1 && -d "${HOME}/man" ) then
 endif
 
 # Default umask
-umask 022
+umask 027
 
 #
 # Miscellaneous user preferences

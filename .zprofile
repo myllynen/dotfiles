@@ -70,7 +70,7 @@ typeset -U path manpath
 [[ -z "$MANPATH" ]] && unset MANPATH
 
 # Default umask
-umask 022
+umask 027
 
 #
 # Miscellaneous user preferences
