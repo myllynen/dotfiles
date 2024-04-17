@@ -8,25 +8,28 @@ if ( $?SHELL == 0 || { eval 'if ! ( $SHELL =~ *csh* ) exit 0' } ) setenv SHELL "
 # Make OSTYPE like on other shells
 setenv OSTYPE "`uname -s | tr '[:upper:]' '[:lower:]'`"
 
+# Default umask
+umask 027
+
+# Disable GNU extensions
+#setenv POSIXLY_CORRECT y
+#setenv POSIX_ME_HARDER y
+
+# Cygwin environment - add winsymlinks if needed to create shortcuts
+if ( "${OSTYPE}" == 'cygwin' ) then
+	setenv CYGWIN nodosfilewarning
+endif
+
 # Locale environment from ~/.i18n
 if ( -f "${HOME}/.i18n" ) then
 	eval `sed -ne 's|^[[:blank:]]*\([^#=]\{1,\}\)=\([^=]*\)|setenv \1 \2;|p' "${HOME}/.i18n"`
 endif
 setenv TIME_STYLE long-iso
 
-# Disable GNU extensions
-#setenv POSIXLY_CORRECT y
-#setenv POSIX_ME_HARDER y
-
 # Timezone
 #if ( "${OSTYPE}" == 'linux' ) then
 #	setenv TZ :/etc/localtime
 #endif
-
-# Cygwin environment - add winsymlinks if needed to create shortcuts
-if ( "${OSTYPE}" == 'cygwin' ) then
-	setenv CYGWIN nodosfilewarning
-endif
 
 # Make sure some widely used variables are set
 setenv USERNAME "${USER}"
@@ -73,9 +76,6 @@ endif
 if ( $?MANPATH == 1 && -d "${HOME}/man" ) then
 	setenv MANPATH "${HOME}/man:${MANPATH}"
 endif
-
-# Default umask
-umask 027
 
 #
 # Miscellaneous user preferences

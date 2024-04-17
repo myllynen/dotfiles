@@ -11,6 +11,16 @@ if [ -f /etc/bash.bashrc ]; then
 	. /etc/bash.bashrc
 fi
 
+# Default umask
+umask 027
+
+# Disable GNU extensions
+#export POSIXLY_CORRECT=y
+#export POSIX_ME_HARDER=y
+
+# Cygwin environment - add winsymlinks if needed to create shortcuts
+[[ "$OSTYPE" = *cygwin* ]] && export CYGWIN=nodosfilewarning
+
 # Locale environment from ~/.i18n
 [[ -f "$HOME/.i18n" ]] && . "$HOME/.i18n"
 for cat in LANG LANGUAGE LC_ADDRESS LC_COLLATE LC_CTYPE LC_MEASUREMENT \
@@ -20,15 +30,8 @@ done
 [[ -n "$LOCPATH" ]] && export LOCPATH
 export TIME_STYLE=long-iso
 
-# Disable GNU extensions
-#export POSIXLY_CORRECT=y
-#export POSIX_ME_HARDER=y
-
 # Timezone
 #[[ "$OSTYPE" = *gnu* ]] && export TZ=:/etc/localtime
-
-# Cygwin environment - add winsymlinks if needed to create shortcuts
-[[ "$OSTYPE" = *cygwin* ]] && export CYGWIN=nodosfilewarning
 
 # Make sure some widely used variables are set
 export USERNAME=${USERNAME:-$USER}
@@ -54,9 +57,6 @@ export MAIL=${MAIL:-/var/mail/$USER}
 # Manual path. You may use /etc/man.conf instead of MANPATH on some systems
 [[ -n "$MANPATH" && -d "$HOME/.local/share/man" ]] && export MANPATH="$HOME/.local/share/man/$MANPATH"
 [[ -n "$MANPATH" && -d "$HOME/man" ]] && export MANPATH="$HOME/man:$MANPATH"
-
-# Default umask
-umask 027
 
 #
 # Miscellaneous user preferences

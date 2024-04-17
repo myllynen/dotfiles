@@ -12,6 +12,16 @@ _src_etc_profile() {
 _src_etc_profile
 unset -f _src_etc_profile
 
+# Default umask
+umask 027
+
+# Disable GNU extensions
+#export POSIXLY_CORRECT=y
+#export POSIX_ME_HARDER=y
+
+# Cygwin environment - add winsymlinks if needed to create shortcuts
+[[ "$OSTYPE" = *cygwin* ]] && export CYGWIN=nodosfilewarning
+
 # Locale environment from ~/.i18n
 [[ -f "$HOME/.i18n" ]] && . "$HOME/.i18n"
 for cat in LANG LANGUAGE LC_ADDRESS LC_COLLATE LC_CTYPE LC_MEASUREMENT \
@@ -21,15 +31,8 @@ done
 [[ -n "$LOCPATH" ]] && export LOCPATH || unset LOCPATH
 export TIME_STYLE=long-iso
 
-# Disable GNU extensions
-#export POSIXLY_CORRECT=y
-#export POSIX_ME_HARDER=y
-
 # Timezone
 #[[ "$OSTYPE" = *gnu* ]] && export TZ=:/etc/localtime
-
-# Cygwin environment - add winsymlinks if needed to create shortcuts
-[[ "$OSTYPE" = *cygwin* ]] && export CYGWIN=nodosfilewarning
 
 # Make sure some widely used variables are set
 export USER=${USER:-$USERNAME}
@@ -42,7 +45,7 @@ export MAIL=${MAIL:-/var/mail/$USERNAME}
 [[ -n "$JAVA_HOME" ]] && export JAVACMD="$JAVA_HOME/bin/java"
 
 # Python
-#export -TU PYTHONPATH="$HOME/.local/lib/python3.9/site-packages${PYTHONPATH:+:$PYTHONPATH}" pythonpath
+#export -U PYTHONPATH="$HOME/.local/lib/python3.9/site-packages${PYTHONPATH:+:$PYTHONPATH}"
 
 # Path
 [[ -d "$HOME/.local/bin" ]] && export PATH="$HOME/.local/bin:$PATH"
@@ -68,9 +71,6 @@ unsetopt EXTENDED_GLOB
 
 typeset -U path manpath
 [[ -z "$MANPATH" ]] && unset MANPATH
-
-# Default umask
-umask 027
 
 #
 # Miscellaneous user preferences
