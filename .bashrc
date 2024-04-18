@@ -82,26 +82,13 @@ export SYSTEMD_LESS=$LESS
 # csh compatibility
 function setenv () { export "$1"="$2"; }
 
-# Set prompt
-if [ $UID -ne 0 ]
-then
-	PS1='\[\033[32m\]\u@\h:\[\033[00m\]\w\$ '
-else
-	PS1='\[\033[31m\]\u@\h:\[\033[00m\]\w# '
-fi
-
 # Options
 GLOBIGNORE=.:..
 HISTCONTROL=ignoredups
 shopt -s cdable_vars cdspell checkjobs checkwinsize cmdhist dirspell
 shopt -s histappend hostcomplete huponexit lithist mailwarn progcomp
 
-# History settings
-HISTFILE="$HOME/.bash_history"
-HISTSIZE=8000
-HISTFILESIZE=9000
-
-# Set terminal type - set only if you have problems
+# Terminal type - set only if really needed
 #export TERM=vt100
 
 # Use full bytes for characters
@@ -112,13 +99,24 @@ tty -s > /dev/null 2>&1 && stty cs8 || :
 DIRSTACKSIZE=64
 LISTMAX=0
 
-# Watch for some friends
-#watch=(notme)
-#WATCHFMT='%n %a %l from %m at %T'
-#LOGCHECK=60
+# Prompt
+if [ $UID -ne 0 ]
+then
+	PS1='\[\033[32m\]\u@\h:\[\033[00m\]\w\$ '
+else
+	PS1='\[\033[31m\]\u@\h:\[\033[00m\]\w# '
+fi
+
+# History settings
+HISTFILE="$HOME/.bash_history"
+HISTSIZE=8000
+HISTFILESIZE=9000
 
 # Mail check interval
 MAILCHECK=60
+
+# Unset unhelpful options and settings
+unset SSH_ASKPASS
 
 # Don't logout automagically
 TMOUT=0
@@ -150,8 +148,8 @@ then
 	alias rm='rm -i'
 fi
 
-# Get rid of some stupid aliases/options which might be set
-unset SSH_ASKPASS
+# less
+type -P lesspipe.sh > /dev/null && export LESSOPEN="| lesspipe.sh %s"
 
 # ls(1) colors and other options
 eval `dircolors --sh 2> /dev/null`
@@ -177,9 +175,6 @@ in
 		;;
 esac
 
-# less
-type -P lesspipe.sh > /dev/null && export LESSOPEN="| lesspipe.sh %s"
-
 # Functions
 
 # Helper
@@ -195,6 +190,24 @@ function istext () {
 		echo "$FUNCNAME: $1: not a text file" 1>&2
 	fi
 	return $rc
+}
+
+function dud () {
+	local flags
+	case "$OSTYPE"
+	in
+		*darwin*|*freebsd*|*gnu*|*linux*|*netbsd*|*openbsd*|*solaris*|*cygwin*)
+			flags=sh
+			;;
+		*)
+			flags=s
+			;;
+	esac
+	du -$flags */ .
+}
+
+function lbig () {
+	'ls' -lF "$@" | sort -rn -k5 | grep -v total | $PAGER
 }
 
 function lstar () { _lstar lstar "$@"; }
@@ -225,6 +238,46 @@ function _lstar () {
 	else
 		nice tar "$flags" "$f" "$@"
 	fi
+}
+
+function dos2mac  () { _x2y dos2mac  "$@"; }
+function dos2unix () { _x2y dos2unix "$@"; }
+function mac2dos  () { _x2y mac2dos  "$@"; }
+function mac2unix () { _x2y mac2unix "$@"; }
+function unix2dos () { _x2y unix2dos "$@"; }
+function unix2mac () { _x2y unix2mac "$@"; }
+function _x2y () {
+	[[ $# -ne 2 ]] && echo "Usage: $1 <file>" 1>&2 && return 1
+	[[ ! -w . || ! -x . ]] && echo "$1: permission denied: `pwd`" 1>&2 && return 1
+	istext "$2" "$1: skipping" || return 1
+	local rand="$RANDOM"
+	case "$1"
+	in
+		dos2mac)
+			tr -d '\n' < "$2" > "$1.$$.$rand"
+			;;
+		dos2unix)
+			tr -d '\r' < "$2" > "$1.$$.$rand"
+			;;
+		mac2dos)
+			awk 'BEGIN{RS="\r";ORS="\r\n"}{print $0}' < "$2" > "$1.$$.$rand"
+			;;
+		mac2unix)
+			tr '\r' '\n' < "$2" > "$1.$$.$rand"
+			;;
+		unix2dos)
+			awk -- '{printf("%s\r\n",$0);}' < "$2" > "$1.$$.$rand"
+			;;
+		unix2mac)
+			tr '\n' '\r' < "$2" > "$1.$$.$rand"
+			;;
+	esac
+	diff "$2" "$1.$$.$rand" > /dev/null 2>&1
+	if [[ $? -eq 1 ]]
+	then
+		cat "$1.$$.$rand" > "$2"
+	fi
+	rm -f "$1.$$.$rand"
 }
 
 function mktar     () { _mktar mktar     "$@"; }
@@ -273,62 +326,16 @@ function _mktar () {
 	cd "$location" ; location=
 }
 
-function dud () {
-	local flags
-	case "$OSTYPE"
-	in
-		*darwin*|*freebsd*|*gnu*|*linux*|*netbsd*|*openbsd*|*solaris*|*cygwin*)
-			flags=sh
-			;;
-		*)
-			flags=s
-			;;
-	esac
-	du -$flags */ .
-}
-
-function lbig () {
-	'ls' -lF "$@" | sort -rn -k5 | grep -v total | $PAGER
-}
-
-function dos2mac  () { _x2y dos2mac  "$@"; }
-function dos2unix () { _x2y dos2unix "$@"; }
-function mac2dos  () { _x2y mac2dos  "$@"; }
-function mac2unix () { _x2y mac2unix "$@"; }
-function unix2dos () { _x2y unix2dos "$@"; }
-function unix2mac () { _x2y unix2mac "$@"; }
-function _x2y () {
-	[[ $# -ne 2 ]] && echo "Usage: $1 <file>" 1>&2 && return 1
-	[[ ! -w . || ! -x . ]] && echo "$1: permission denied: `pwd`" 1>&2 && return 1
-	istext "$2" "$1: skipping" || return 1
+function rmws () {
+	# Remove spaces and tabs from EOLs if exist
+	[[ $# -ne 1 ]] && echo "Usage: $FUNCNAME <file>" 1>&2 && return 1
+	[[ ! -w . || ! -x . ]] && echo "$FUNCNAME: permission denied: `pwd`" 1>&2 && return 1
+	istext "$1" "$FUNCNAME: skipping" || return 1
+	grep "[ 	]$" "$1" > /dev/null 2>&1 || return 0
 	local rand="$RANDOM"
-	case "$1"
-	in
-		dos2mac)
-			tr -d '\n' < "$2" > "$1.$$.$rand"
-			;;
-		dos2unix)
-			tr -d '\r' < "$2" > "$1.$$.$rand"
-			;;
-		mac2dos)
-			awk 'BEGIN{RS="\r";ORS="\r\n"}{print $0}' < "$2" > "$1.$$.$rand"
-			;;
-		mac2unix)
-			tr '\r' '\n' < "$2" > "$1.$$.$rand"
-			;;
-		unix2dos)
-			awk -- '{printf("%s\r\n",$0);}' < "$2" > "$1.$$.$rand"
-			;;
-		unix2mac)
-			tr '\n' '\r' < "$2" > "$1.$$.$rand"
-			;;
-	esac
-	diff "$2" "$1.$$.$rand" > /dev/null 2>&1
-	if [[ $? -eq 1 ]]
-	then
-		cat "$1.$$.$rand" > "$2"
-	fi
-	rm -f "$1.$$.$rand"
+	sed -e 's/[ 	]*$//g' < "$1" > "$FUNCNAME.$$.$rand"
+	cat "$FUNCNAME.$$.$rand" > "$1"
+	rm -f "$FUNCNAME.$$.$rand"
 }
 
 function jpg2pdf () {
@@ -349,11 +356,6 @@ function ps2mps () {
 	psnup -pa4 -Pa4 -nup "$pages" "$1" "$1.multi.ps"
 }
 
-function pdfstrip () {
-	gs -sDEVICE=pdfwrite -dNOPAUSE -dQUIET -dBATCH -dFirstPage=1 -dLastPage=1 -sOutputFile="$1".tmp "$1"
-	mv "$1".tmp "$1"
-}
-
 function pdfpw () {
 	[[ ! -r "$1" ]] && echo "Usage: $0 <file.pdf>" 1>&2 && return 1
 	local old new
@@ -368,6 +370,11 @@ function pdfpw () {
 	[[ $? -eq 0 ]] && echo "ok." || (rm -f "new-$1" ; echo "failed.")
 }
 
+function pdfstrip () {
+	gs -sDEVICE=pdfwrite -dNOPAUSE -dQUIET -dBATCH -dFirstPage=1 -dLastPage=1 -sOutputFile="$1".tmp "$1"
+	mv "$1".tmp "$1"
+}
+
 function txt2pdf () { _txt2p txt2pdf "$@"; }
 function txt2ps () { _txt2p txt2ps "$@"; }
 function _txt2p () {
@@ -378,18 +385,6 @@ function _txt2p () {
 	local fmt=${cmd/txt2}
 	enscript -BhR -f Times-Roman12 -i 4 -M A4 -N n -t "$1" -T 4 -o "$1.ps" "$1" 2>&1 | sed -e "s/ps$/$fmt/"
 	[[ $fmt = pdf ]] && ps2pdf "$1.ps" "$1.pdf" && rm -f "$1.ps" || :
-}
-
-function rmws () {
-	# Remove spaces and tabs from EOLs if exist
-	[[ $# -ne 1 ]] && echo "Usage: $FUNCNAME <file>" 1>&2 && return 1
-	[[ ! -w . || ! -x . ]] && echo "$FUNCNAME: permission denied: `pwd`" 1>&2 && return 1
-	istext "$1" "$FUNCNAME: skipping" || return 1
-	grep "[ 	]$" "$1" > /dev/null 2>&1 || return 0
-	local rand="$RANDOM"
-	sed -e 's/[ 	]*$//g' < "$1" > "$FUNCNAME.$$.$rand"
-	cat "$FUNCNAME.$$.$rand" > "$1"
-	rm -f "$FUNCNAME.$$.$rand"
 }
 
 function tailc () {

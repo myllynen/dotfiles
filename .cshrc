@@ -102,30 +102,12 @@ setenv SYSTEMD_LESS "${LESS}"
 
 
 
-# Set prompt
-set prompt = "%{\033[32m%}%n@%m:%{\033[00m%}%~% "
-
 # Options
 set autolist
 set correct = all
 set histdup = prev
 
-# Key bindings for Linux/BSD/X11/Solaris
-bindkey "^B"      backward-word
-bindkey "^F"      forward-word
-bindkey "^U"      backward-kill-line
-bindkey "^W"      backward-delete-word
-bindkey "\e[2~"   overwrite-mode
-bindkey "\e[3~"   delete-char
-bindkey "\e[7~"   beginning-of-line
-bindkey "\e[8~"   end-of-line
-
-# History settings
-set histfile = "${HOME}/.history"
-set history  = 8000
-set savehist = (8000 merge)
-
-# Set terminal type - set only if you have problems
+# Terminal type - set only if really needed
 #setenv TERM vt100
 
 # Eight bit character size
@@ -136,15 +118,32 @@ tty -s >& /dev/null && stty cs8 >& /dev/null || :
 set dirstack = 64
 #set listmax = 0
 
-# Watch for some friends
-#set watch = (10 any any)
-#set who = "%n %a %l from %m at %T"
+# Prompt
+set prompt = "%{\033[32m%}%n@%m:%{\033[00m%}%~% "
+
+# History settings
+set histfile = "${HOME}/.history"
+set history  = 8000
+set savehist = (8000 merge)
 
 # Mail check interval
 #set mail = "60 ${MAIL}"
 
+# Unset unhelpful options and settings
+unsetenv SSH_ASKPASS
+
 # Don't logout automagically
 unset autologout
+
+# Key bindings for Linux/BSD/X11/Solaris
+bindkey "^B"      backward-word
+bindkey "^F"      forward-word
+bindkey "^U"      backward-kill-line
+bindkey "^W"      backward-delete-word
+bindkey "\e[2~"   overwrite-mode
+bindkey "\e[3~"   delete-char
+bindkey "\e[7~"   beginning-of-line
+bindkey "\e[8~"   end-of-line
 
 # Aliases
 alias cd~ 'cd ~'
@@ -174,8 +173,10 @@ if ( `id -u` == 0 ) then
 	alias rm 'rm -i'
 endif
 
-# Get rid of some stupid aliases/options which might be set
-unsetenv SSH_ASKPASS
+# less
+if ( -x "`which lesspipe.sh`" ) then
+	setenv LESSOPEN "| lesspipe.sh %s"
+endif
 
 # ls(1) colors and other options
 eval `dircolors --csh >& /dev/null`
@@ -205,11 +206,6 @@ switch ( "${OSTYPE}" )
 		alias ls 'ls -F -h'
 		breaksw
 endsw
-
-# less
-if ( -x "`which lesspipe.sh`" ) then
-	setenv LESSOPEN "| lesspipe.sh %s"
-endif
 
 # Completion control
 if ( -f /etc/csh_completion ) then

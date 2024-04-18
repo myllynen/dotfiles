@@ -6,15 +6,6 @@
 # csh compatibility
 setenv () { export "$1"="$2" }
 
-# Prompt
-if [ $UID -ne 0 ]
-then
-	PROMPT='%F{green}%n@%m:%F{reset}%~> '
-else
-	PROMPT='%F{red}%n@%m:%F{reset}%~# '
-fi
-#RPROMPT=''
-
 # Options
 setopt \
 	NO_ALWAYS_LAST_PROMPT \
@@ -49,6 +40,40 @@ setopt \
 	NO_PROMPT_CR \
 	PUSHD_IGNORE_DUPS
 
+# Terminal type - set only if really needed
+#export TERM=vt100
+
+# Use full bytes for characters
+[[ -n "$TTY" ]] && stty cs8
+
+# Limits
+#ulimit -c 0
+DIRSTACKSIZE=64
+LISTMAX=0
+
+# Prompt
+if [ $UID -ne 0 ]
+then
+	PROMPT='%F{green}%n@%m:%F{reset}%~> '
+else
+	PROMPT='%F{red}%n@%m:%F{reset}%~# '
+fi
+#RPROMPT=''
+
+# History settings
+HISTFILE="$HOME/.zhistory"
+HISTSIZE=9000
+SAVEHIST=8000
+
+# Mail check interval
+MAILCHECK=60
+
+# Unset unhelpful options and settings
+unset SSH_ASKPASS
+
+# Don't logout automagically
+TMOUT=0
+
 # Key bindings for Linux/BSD/X11/Solaris
 # bindkey -v      # vi key bindings
 bindkey -e        # emacs key bindings
@@ -76,38 +101,6 @@ bindkey '\e[1;5D' backward-word
 bindkey '\e[5D'   backward-word
 bindkey '\C-u'    backward-kill-line
 bindkey '\C-w'    backward-kill-word
-
-# History settings
-HISTFILE="$HOME/.zhistory"
-HISTSIZE=9000
-SAVEHIST=8000
-
-# Menu-driven history search
-autoload -Uz history-beginning-search-menu
-zle -N history-beginning-search-menu
-bindkey ^X^X history-beginning-search-menu
-
-# Set terminal type - set only if you have problems
-#export TERM=vt100
-
-# Use full bytes for characters
-[[ -n "$TTY" ]] && stty cs8
-
-# Limits
-#ulimit -c 0
-DIRSTACKSIZE=64
-LISTMAX=0
-
-# Watch for some friends
-#watch=(notme)
-#WATCHFMT='%n %a %l from %m at %T'
-#LOGCHECK=60
-
-# Mail check interval
-MAILCHECK=60
-
-# Don't logout automagically
-TMOUT=0
 
 # Aliases
 alias cp='nocorrect cp'
@@ -142,8 +135,13 @@ then
 	alias rm='nocorrect rm -i'
 fi
 
-# Get rid of some stupid aliases/options which might be set
-unset SSH_ASKPASS
+# Menu-driven history search
+autoload -Uz history-beginning-search-menu
+zle -N history-beginning-search-menu
+bindkey ^X^X history-beginning-search-menu
+
+# less
+[[ -n ${commands[lesspipe.sh]} ]] && export LESSOPEN="| lesspipe.sh %s"
 
 # ls(1) colors and other options
 eval `dircolors --sh 2> /dev/null`
@@ -169,10 +167,15 @@ in
 		;;
 esac
 
-# less
-[[ -n ${commands[lesspipe.sh]} ]] && export LESSOPEN="| lesspipe.sh %s"
-
 # Functions
+
+# Enable Unicode character insertion with Ctrl-U + <code> + Ctrl-U
+function zle_enable_unicode_insert () {
+	autoload -Uz insert-unicode-char
+	zle -N insert-unicode-char
+	bindkey ^U insert-unicode-char
+	echo "$0: bound Ctrl-U to insert-unicode-char"
+}
 
 # Helper
 function istext () {
@@ -189,14 +192,6 @@ function istext () {
 	return $rc
 }
 
-# Enable Unicode character insertion with Ctrl-U + <code> + Ctrl-U
-function zle_enable_unicode_insert () {
-	autoload -Uz insert-unicode-char
-	zle -N insert-unicode-char
-	bindkey ^U insert-unicode-char
-	echo "$0: bound Ctrl-U to insert-unicode-char"
-}
-
 function cpd () {
 	trap 'trap - INT ; bindkey "^M" accept-line ; return 1' INT
 	local cpd_var
@@ -208,6 +203,58 @@ function cpd () {
 	bindkey "^M" accept-line
 	eval "$cpd_var"
 	trap - INT
+}
+
+function dud () {
+	local flags
+	case "$OSTYPE"
+	in
+		*darwin*|*freebsd*|*gnu*|*linux*|*netbsd*|*openbsd*|*solaris*|*cygwin*)
+			flags=sh
+			;;
+		*)
+			flags=s
+			;;
+	esac
+	du -$flags *(/ND) .
+}
+
+function lbig () {
+	'ls' -lF "$@" | sort -rn -k5 | grep -v total | $PAGER
+}
+
+function {dos2mac,dos2unix,mac2dos,mac2unix,unix2dos,unix2mac} () {
+	[[ $# -ne 1 ]] && echo "Usage: $0 <file>" 1>&2 && return 1
+	[[ ! -w . || ! -x . ]] && echo "$0: permission denied: `pwd`" 1>&2 && return 1
+	istext "$1" "$0: skipping" || return 1
+	local rand="$RANDOM"
+	case "$0"
+	in
+		dos2mac)
+			tr -d '\n' < "$1" > "$0.$$.$rand"
+			;;
+		dos2unix)
+			tr -d '\r' < "$1" > "$0.$$.$rand"
+			;;
+		mac2dos)
+			awk 'BEGIN{RS="\r";ORS="\r\n"}{print $0}' < "$1" > "$0.$$.$rand"
+			;;
+		mac2unix)
+			tr '\r' '\n' < "$1" > "$0.$$.$rand"
+			;;
+		unix2dos)
+			awk -- '{printf("%s\r\n",$0);}' < "$1" > "$0.$$.$rand"
+			;;
+		unix2mac)
+			tr '\n' '\r' < "$1" > "$0.$$.$rand"
+			;;
+	esac
+	diff "$1" "$0.$$.$rand" > /dev/null 2>&1
+	if [[ $? -eq 1 ]]
+	then
+		cat "$0.$$.$rand" > "$1"
+	fi
+	rm -f "$0.$$.$rand"
 }
 
 function {ls,un}tar () {
@@ -279,55 +326,15 @@ function mktar{,gz,bz2,xz,zstd} () {
 	cd "$location" ; location=
 }
 
-function dud () {
-	local flags
-	case "$OSTYPE"
-	in
-		*darwin*|*freebsd*|*gnu*|*linux*|*netbsd*|*openbsd*|*solaris*|*cygwin*)
-			flags=sh
-			;;
-		*)
-			flags=s
-			;;
-	esac
-	du -$flags *(/ND) .
-}
-
-function lbig () {
-	'ls' -lF "$@" | sort -rn -k5 | grep -v total | $PAGER
-}
-
-function {dos2mac,dos2unix,mac2dos,mac2unix,unix2dos,unix2mac} () {
+function rmws () {
+	# Remove spaces and tabs from EOLs if exist
 	[[ $# -ne 1 ]] && echo "Usage: $0 <file>" 1>&2 && return 1
 	[[ ! -w . || ! -x . ]] && echo "$0: permission denied: `pwd`" 1>&2 && return 1
 	istext "$1" "$0: skipping" || return 1
+	grep "[ 	]$" "$1" > /dev/null 2>&1 || return 0
 	local rand="$RANDOM"
-	case "$0"
-	in
-		dos2mac)
-			tr -d '\n' < "$1" > "$0.$$.$rand"
-			;;
-		dos2unix)
-			tr -d '\r' < "$1" > "$0.$$.$rand"
-			;;
-		mac2dos)
-			awk 'BEGIN{RS="\r";ORS="\r\n"}{print $0}' < "$1" > "$0.$$.$rand"
-			;;
-		mac2unix)
-			tr '\r' '\n' < "$1" > "$0.$$.$rand"
-			;;
-		unix2dos)
-			awk -- '{printf("%s\r\n",$0);}' < "$1" > "$0.$$.$rand"
-			;;
-		unix2mac)
-			tr '\n' '\r' < "$1" > "$0.$$.$rand"
-			;;
-	esac
-	diff "$1" "$0.$$.$rand" > /dev/null 2>&1
-	if [[ $? -eq 1 ]]
-	then
-		cat "$0.$$.$rand" > "$1"
-	fi
+	sed -e 's/[ 	]*$//g' < "$1" > "$0.$$.$rand"
+	cat "$0.$$.$rand" > "$1"
 	rm -f "$0.$$.$rand"
 }
 
@@ -349,11 +356,6 @@ function ps2mps () {
 	psnup -pa4 -Pa4 -nup "$pages" "$1" "$1.multi.ps"
 }
 
-function pdfstrip () {
-	gs -sDEVICE=pdfwrite -dNOPAUSE -dQUIET -dBATCH -dFirstPage=1 -dLastPage=1 -sOutputFile="$1".tmp "$1"
-	mv "$1".tmp "$1"
-}
-
 function pdfpw () {
 	[[ ! -r "$1" ]] && echo "Usage: $0 <file.pdf>" 1>&2 && return 1
 	local old new
@@ -368,6 +370,11 @@ function pdfpw () {
 	[[ $? -eq 0 ]] && echo "ok." || (rm -f "new-$1" ; echo "failed.")
 }
 
+function pdfstrip () {
+	gs -sDEVICE=pdfwrite -dNOPAUSE -dQUIET -dBATCH -dFirstPage=1 -dLastPage=1 -sOutputFile="$1".tmp "$1"
+	mv "$1".tmp "$1"
+}
+
 function {txt2pdf,txt2ps} () {
 	[[ $# -eq 0 ]] && echo "Usage: $0 <infile>" 1>&2 && return 1
 	[[ ! -w . || ! -x . ]] && echo "$0: permission denied: `pwd`" 1>&2 && return 1
@@ -375,18 +382,6 @@ function {txt2pdf,txt2ps} () {
 	local fmt=${0/txt2}
 	enscript -BhR -f Times-Roman12 -i 4 -M A4 -N n -t "$1" -T 4 -o "$1.ps" "$1" 2>&1 | sed -e "s/ps$/$fmt/"
 	[[ $fmt = pdf ]] && ps2pdf "$1.ps" "$1.pdf" && rm -f "$1.ps" || :
-}
-
-function rmws () {
-	# Remove spaces and tabs from EOLs if exist
-	[[ $# -ne 1 ]] && echo "Usage: $0 <file>" 1>&2 && return 1
-	[[ ! -w . || ! -x . ]] && echo "$0: permission denied: `pwd`" 1>&2 && return 1
-	istext "$1" "$0: skipping" || return 1
-	grep "[ 	]$" "$1" > /dev/null 2>&1 || return 0
-	local rand="$RANDOM"
-	sed -e 's/[ 	]*$//g' < "$1" > "$0.$$.$rand"
-	cat "$0.$$.$rand" > "$1"
-	rm -f "$0.$$.$rand"
 }
 
 function tailc () {
@@ -582,6 +577,7 @@ function {cd,dvd}-{blank,blank-full,burn-iso,checksum,eject,fixate,read-iso,writ
 }
 
 # Completion control
+
 compctl -D -g '*(-)' + -g '*(-D) ..' + -x 'S[..]' -k '(..)' -qS/
 compctl -g '*.(tar|t[abgpx]z|tz|tar.gz|tar.Z|tarZ|tbz2|tar.bz2|tar.xz|tar.zst|tar.zstd)' + -g '*(-/) ..' {ls,un}tar
 compctl -g '*(-/)' + -g '*(-D/) ..' + -x 'S[..]' -k '(..)' -qS/ -- cd mktar{,gz,bz2,xz,zstd} {cd,dvd}-write-dir{,-close-disc}
