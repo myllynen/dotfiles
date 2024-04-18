@@ -10,5 +10,5 @@ setopt NO_GLOBAL_RCS
 # Erase possible traces of an inferior shell invoking us
 unset BASH BASH_VERSION
 
-# Make sure complete environment is available when needed
-[[ -t 0 && -o interactive && ! -o login && -n $TERM ]] && . "${HOME}/.zprofile"
+# Ensure shell profile is initialized only once
+[[ -z "$TIME_STYLE" ]] && . "${HOME}/.zprofile"
