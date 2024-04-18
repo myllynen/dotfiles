@@ -38,6 +38,9 @@ if ( $?MAIL == 0 ) then
 	setenv MAIL "/var/mail/${USER}"
 endif
 
+# Library path. Set LD_LIBRARY_PATH only if you REALLY know what you are doing
+#setenv LD_LIBRARY_PATH /usr/local/lib
+
 # Java
 if ( $?JAVA_HOME == 0 && -d /etc/alternatives/java_sdk ) then
 	setenv JAVA_HOME /etc/alternatives/java_sdk
@@ -65,9 +68,6 @@ endif
 if ( $?PATH == 1 && -d "${HOME}/bin" ) then
 	setenv PATH "${HOME}/bin:${PATH}"
 endif
-
-# Library path. Set LD_LIBRARY_PATH only if you REALLY know what you are doing
-#setenv LD_LIBRARY_PATH /usr/local/lib
 
 # Manual path. You may use /etc/man.conf instead of MANPATH on some systems
 if ( $?MANPATH == 1 && -d "${HOME}/.local/share/man" ) then
@@ -97,8 +97,8 @@ setenv MORE -c
 setenv PG -cn
 setenv READNULLCMD "${PAGER}"
 setenv SYSTEMD_LESS "${LESS}"
-# setenv IRCNICK
-# setenv IRCSERVER
+#setenv IRCNICK
+#setenv IRCSERVER
 
 
 

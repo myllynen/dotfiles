@@ -39,6 +39,9 @@ export USER=${USER:-$USERNAME}
 export HOSTNAME=${HOSTNAME:-$HOST}
 export MAIL=${MAIL:-/var/mail/$USERNAME}
 
+# Library path. Set LD_LIBRARY_PATH only if you REALLY know what you are doing
+#export LD_LIBRARY_PATH=/usr/local/lib
+
 # Java
 [[ -z "$JAVA_HOME" && -d /etc/alternatives/java_sdk ]] && export JAVA_HOME=/etc/alternatives/java_sdk
 [[ -z "$JAVA_HOME" && -d /etc/alternatives/jre ]] && export JAVA_HOME=/etc/alternatives/jre
@@ -50,9 +53,6 @@ export MAIL=${MAIL:-/var/mail/$USERNAME}
 # Path
 [[ -d "$HOME/.local/bin" ]] && export PATH="$HOME/.local/bin:$PATH"
 [[ -d "$HOME/bin" ]] && export PATH="$HOME/bin:$PATH"
-
-# Library path. Set LD_LIBRARY_PATH only if you REALLY know what you are doing
-#export LD_LIBRARY_PATH=/usr/local/lib
 
 # Manual path. You may use /etc/man.conf instead of MANPATH on some systems
 [[ -n "$MANPATH" && -d "$HOME/.local/share/man" ]] && export MANPATH="$HOME/.local/share/man/$MANPATH"
@@ -88,5 +88,5 @@ export MORE=-c
 export PG=-cn
 export READNULLCMD=$PAGER
 export SYSTEMD_LESS=$LESS
-# export IRCNICK=
-# export IRCSERVER=
+#export IRCNICK=
+#export IRCSERVER=

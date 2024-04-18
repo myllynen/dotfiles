@@ -27,7 +27,7 @@ for cat in LANG LANGUAGE LC_ADDRESS LC_COLLATE LC_CTYPE LC_MEASUREMENT \
 		LC_MESSAGES LC_MONETARY LC_NAME LC_NUMERIC LC_PAPER LC_TELEPHONE LC_TIME; do
 	[[ -n ${!cat} ]] && export $cat || unset $cat
 done
-[[ -n "$LOCPATH" ]] && export LOCPATH
+[[ -n "$LOCPATH" ]] && export LOCPATH || unset LOCPATH
 export TIME_STYLE=long-iso
 
 # Timezone
@@ -38,6 +38,9 @@ export USERNAME=${USERNAME:-$USER}
 export LOGNAME=${LOGNAME:-$USER}
 export HOST=${HOST:-$HOSTNAME}
 export MAIL=${MAIL:-/var/mail/$USER}
+
+# Library path. Set LD_LIBRARY_PATH only if you REALLY know what you are doing
+#export LD_LIBRARY_PATH=/usr/local/lib
 
 # Java
 [[ -z "$JAVA_HOME" && -d /etc/alternatives/java_sdk ]] && export JAVA_HOME=/etc/alternatives/java_sdk
@@ -50,9 +53,6 @@ export MAIL=${MAIL:-/var/mail/$USER}
 # Path
 [[ -d "$HOME/.local/bin" ]] && export PATH="$HOME/.local/bin:$PATH"
 [[ -d "$HOME/bin" ]] && export PATH="$HOME/bin:$PATH"
-
-# Library path. Set LD_LIBRARY_PATH only if you REALLY know what you are doing
-#export LD_LIBRARY_PATH=/usr/local/lib
 
 # Manual path. You may use /etc/man.conf instead of MANPATH on some systems
 [[ -n "$MANPATH" && -d "$HOME/.local/share/man" ]] && export MANPATH="$HOME/.local/share/man/$MANPATH"
@@ -74,8 +74,8 @@ export MORE=-c
 export PG=-cn
 export READNULLCMD=$PAGER
 export SYSTEMD_LESS=$LESS
-# export IRCNICK=
-# export IRCSERVER=
+#export IRCNICK=
+#export IRCSERVER=
 
 
 
