@@ -1,9 +1,9 @@
 # Locale environment
 #LOCPATH=$HOME/.locale
-LANG=en_US.UTF-8
-LC_COLLATE=C
+LANG=C.UTF-8
+#LC_COLLATE=C.UTF-8
 LC_CTYPE=fi_FI.UTF-8
-LC_MEASUREMENT=C
-LC_PAPER=C
-# Adjust this manually with the C shell
-[[ "$OSTYPE" = *gnu* ]] && LC_TIME=en_DK.UTF-8 || LC_TIME=C
+#LC_MEASUREMENT=C.UTF-8
+#LC_PAPER=C.UTF-8
+# Adjust this manually if en_DK.UTF-8 not available
+LC_TIME=en_DK.UTF-8
