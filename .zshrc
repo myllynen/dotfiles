@@ -703,8 +703,12 @@ function +vi-git-status-commits () {
 # Display current changes
 zstyle ':vcs_info:git*+set-message:*' hooks git-status-changes
 function +vi-git-status-changes () {
-	local -A x; x=($(git status --porcelain 2> /dev/null))
-	hook_com[staged]+="${${(ks::u)x}// }"
+	local -A x; for line in "${(@f)$(git status --porcelain)}"; do
+		key="${line[1,2]}"
+		value="${line[4,-1]}"
+		x[$value]=$key
+	done
+	hook_com[staged]+="${${(s::u)x}// }"
 	return 0
 }
 
