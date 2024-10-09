@@ -18,15 +18,19 @@ define min(a, b) {
 
 define pow(a, b) {
   if (scale(b) == 0) {
-    return a ^ b;
+    return a^b;
   }
   return e(b*l(a));
 }
 
 define chg(a, b) {
-  return (b-a)/a*100;
+  return 100*(b/a-1);
 }
 
 define pct(a, b) {
   return a*b/100;
+}
+
+define pof(a, b) {
+  return 100*(a/b);
 }
