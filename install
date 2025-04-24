@@ -1,0 +1,14 @@
+#!/bin/sh
+
+cd "$(dirname "$0")" || exit 1
+
+printf "Installing new dotfiles"
+for f in .* ; do
+  if test -f "$f"; then
+    if ! diff -q "$f" "$HOME/$f" > /dev/null 2>&1; then
+      printf "."
+      cp -p "$f" "$HOME/$f" || exit 2
+    fi
+  fi
+done
+printf " done.\n"
