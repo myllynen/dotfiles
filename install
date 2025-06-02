@@ -2,13 +2,35 @@
 
 cd "$(dirname "$0")" || exit 1
 
-printf "Installing new dotfiles"
+if [ -f /etc/os-release ]; then
+  . /etc/os-release || exit 2
+  p=${PLATFORM_ID#*:}
+fi
+
+ts=0
+if [ -d .git ] && command -v git-sync-timestamps > /dev/null 2>&1; then
+  git-sync-timestamps
+  ts=1
+fi
+
+printf "Installing new dotfiles: "
 for f in .* ; do
-  if test -f "$f"; then
-    if ! diff -q "$f" "$HOME/$f" > /dev/null 2>&1; then
+  if [ -f "$f" ]; then
+    if [ -f "$f-$p" ] || [ "${f##*-}" != "$p" -a "$f" != "${f##*-}" ]; then
+      continue
+    fi
+    t="$HOME/$f"
+    if [ "$f" != "${f%-$p}" ]; then
+      t="$HOME/${f%-$p}"
+    fi
+    if ! diff -q "$f" "$t" > /dev/null 2>&1; then
+      s=" "
       printf "."
-      cp -p "$f" "$HOME/$f" || exit 2
+      cp -p "$f" "$t" || exit 3
+    fi
+    if [ $ts -eq 1 ]; then
+      touch -r "$f" "$t"
     fi
   fi
 done
-printf " done.\n"
+printf "${s}done.\n"
