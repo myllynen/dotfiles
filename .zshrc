@@ -694,7 +694,7 @@ function +vi-git-status-commits () {
 	local m=$(git branch -a | grep main > /dev/null 2>&1 && echo main || echo master)
 	local q="@{upstream}...HEAD"
 	[[ "${gitbranch}" != "$m" ]] && q="$m..."
-	local -a x; x=($(git rev-list --left-right --count $q 2> /dev/null))
+	local -a x; x=($(git --no-optional-locks rev-list --left-right --count $q 2> /dev/null))
 	(( $x[1] )) && hook_com[misc]+="↓$x[1]"
 	(( $x[2] )) && hook_com[misc]+="↑$x[2]"
 	return 0
@@ -703,7 +703,7 @@ function +vi-git-status-commits () {
 # Display current changes
 zstyle ':vcs_info:git*+set-message:*' hooks git-status-changes
 function +vi-git-status-changes () {
-	local -A x; for line in "${(@f)$(git status --porcelain)}"; do
+	local -A x; for line in "${(@f)$(git --no-optional-locks status --porcelain)}"; do
 		key="${line[1,2]}"
 		value="${line[4,-1]}"
 		x[$value]=$key
