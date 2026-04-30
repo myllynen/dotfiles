@@ -125,7 +125,7 @@ alias lbigrpms='rpm -qa --qf "%{size}\t%{name}\n" | sort -nr | numfmt --field=1 
 [[ -n ${commands[vim]} ]] && alias vi="vim -u ~/.vimrc"
 alias vim="vim -u ~/.vimrc"
 unalias which > /dev/null 2>&1 || :
-alias bc='bc -l ~/.bcrc'
+alias bc='bc -l -q ~/.bcrc'
 
 # Always play it safe when super-user
 if [ $UID -eq 0 ]

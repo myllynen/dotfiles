@@ -2,6 +2,11 @@
 
 # Global definitions are always sourced from /etc/csh.cshrc
 
+# Change shell here if not allowed on system-level
+#if ( $?prompt && -x /bin/zsh ) then
+#	exec /bin/zsh -i
+#endif
+
 # Ensure SHELL is always correctly set
 if ( $?SHELL == 0 || { eval 'if ! ( $SHELL =~ *csh* ) exit 0' } ) setenv SHELL "$0"
 
@@ -164,7 +169,7 @@ if ( -x "`which vim`" ) then
 	alias vi 'vim -u ~/.vimrc'
 endif
 alias vim 'vim -u ~/.vimrc'
-alias bc 'bc -l ~/.bcrc'
+alias bc 'bc -l -q ~/.bcrc'
 
 # Always play it safe when super-user
 if ( `id -u` == 0 ) then

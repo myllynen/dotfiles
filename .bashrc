@@ -1,5 +1,10 @@
 # ~/.bashrc
 
+# Change here shell if not allowed on system-level
+#if [ -t 1 -a -x /bin/zsh ]; then
+#  exec /bin/zsh -i
+#fi
+
 # Don't bother if sourced already
 type -p mktar && return
 
@@ -138,7 +143,7 @@ alias journalctl='journalctl -l -n 50'
 alias lbigrpms='rpm -qa --qf "%{size}\t%{name}\n" | sort -nr | numfmt --field=1 --to=iec | $PAGER'
 type -P vim > /dev/null && alias vi='vim -u ~/.vimrc'
 alias vim="vim -u ~/.vimrc"
-alias bc='bc -l ~/.bcrc'
+alias bc='bc -l -q ~/.bcrc'
 
 # Always play it safe when super-user
 if [ $UID -eq 0 ]
