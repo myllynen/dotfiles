@@ -161,7 +161,12 @@ alias ll 'ls -l'
 alias lsd 'ls -ld */'
 alias grep 'grep --color=tty'
 alias reset "printf '\033\143'"
-alias wget 'wget --hsts-file=/dev/null'
+alias curl 'curl -SLO'
+if ( -x "`which wget2`" ) then
+	alias wget 'wget2 --no-hsts-file'
+else
+	alias wget 'wget --hsts-file=/dev/null'
+endif
 alias systemctl 'systemctl -l -n 50'
 alias journalctl 'journalctl -l -n 50'
 alias lbigrpms 'rpm -qa --qf "%{size}\t%{name}\n" | sort -nr | numfmt --field=1 --to=iec | "${PAGER}"'
