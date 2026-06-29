@@ -57,15 +57,6 @@ if ( $?JAVA_HOME == 1 ) then
 	setenv JAVACMD "${JAVA_HOME}/bin/java"
 endif
 
-# Python
-#if ( -d "${HOME}/.local/lib/python3.9/site-packages" ) then
-#	if ( $?PYTHONPATH == 1 ) then
-#		setenv PYTHONPATH "${HOME}/.local/lib/python3.9/site-packages:${PYTHONPATH}"
-#	else
-#		setenv PYTHONPATH "${HOME}/.local/lib/python3.9/site-packages"
-#	endif
-#endif
-
 # Path
 if ( $?PATH == 1 && -d "${HOME}/.local/bin" ) then
 	setenv PATH "${HOME}/.local/bin:${PATH}"
@@ -74,11 +65,17 @@ if ( $?PATH == 1 && -d "${HOME}/bin" ) then
 	setenv PATH "${HOME}/bin:${PATH}"
 endif
 
-# Manual path. You may use /etc/man.conf instead of MANPATH on some systems
-if ( $?MANPATH == 1 && -d "${HOME}/.local/share/man" ) then
+# Man page path
+if ( -d "${HOME}/.local/share/man" ) then
+	if ( $?MANPATH == 0 ) then
+		setenv MANPATH ""
+	endif
 	setenv MANPATH "${HOME}/.local/share/man:${MANPATH}"
 endif
-if ( $?MANPATH == 1 && -d "${HOME}/man" ) then
+if ( -d "${HOME}/man" ) then
+	if ( $?MANPATH == 0 ) then
+		setenv MANPATH ""
+	endif
 	setenv MANPATH "${HOME}/man:${MANPATH}"
 endif
 

@@ -52,16 +52,13 @@ export MAIL=${MAIL:-/var/mail/$USER}
 [[ -z "$JAVA_HOME" && -d /etc/alternatives/jre ]] && export JAVA_HOME=/etc/alternatives/jre
 [[ -n "$JAVA_HOME" ]] && export JAVACMD="$JAVA_HOME/bin/java"
 
-# Python
-#export PYTHONPATH="$HOME/.local/lib/python3.9/site-packages${PYTHONPATH:+:$PYTHONPATH}"
-
 # Path
 [[ -d "$HOME/.local/bin" ]] && export PATH="$HOME/.local/bin:$PATH"
 [[ -d "$HOME/bin" ]] && export PATH="$HOME/bin:$PATH"
 
-# Manual path. You may use /etc/man.conf instead of MANPATH on some systems
-[[ -n "$MANPATH" && -d "$HOME/.local/share/man" ]] && export MANPATH="$HOME/.local/share/man/$MANPATH"
-[[ -n "$MANPATH" && -d "$HOME/man" ]] && export MANPATH="$HOME/man:$MANPATH"
+# Man page path
+[[ -d "$HOME/.local/share/man" ]] && export MANPATH="$HOME/.local/share/man:$MANPATH"
+[[ -d "$HOME/man" ]] && export MANPATH="$HOME/man:$MANPATH"
 
 #
 # Miscellaneous user preferences

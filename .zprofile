@@ -47,29 +47,16 @@ export MAIL=${MAIL:-/var/mail/$USERNAME}
 [[ -z "$JAVA_HOME" && -d /etc/alternatives/jre ]] && export JAVA_HOME=/etc/alternatives/jre
 [[ -n "$JAVA_HOME" ]] && export JAVACMD="$JAVA_HOME/bin/java"
 
-# Python
-#export -U PYTHONPATH="$HOME/.local/lib/python3.9/site-packages${PYTHONPATH:+:$PYTHONPATH}"
-
 # Path
 [[ -d "$HOME/.local/bin" ]] && export PATH="$HOME/.local/bin:$PATH"
 [[ -d "$HOME/bin" ]] && export PATH="$HOME/bin:$PATH"
+path=($^path(:a))
 
-# Manual path. You may use /etc/man.conf instead of MANPATH on some systems
-[[ -n "$MANPATH" && -d "$HOME/.local/share/man" ]] && export MANPATH="$HOME/.local/share/man/$MANPATH"
-[[ -n "$MANPATH" && -d "$HOME/man" ]] && export MANPATH="$HOME/man:$MANPATH"
-
-# Clean up paths, save :: in MANPATH
-path=($^path(N^M))
-[[ -n "$MANPATH" ]] && export MANPATH=${${MANPATH//::/:/:}/%:/:/}
-[[ -n "$MANPATH" ]] && manpath=($^manpath(N^M))
-# Remove duplicate and trailing slashes
-setopt EXTENDED_GLOB
-path=(${${path//\/##/\/}%/})
-[[ -n "$MANPATH" ]] && export MANPATH=${${${MANPATH//\/##/\/}//\/:/:}%/}
-unsetopt EXTENDED_GLOB
-[[ -n "$MANPATH" ]] && export MANPATH=${${MANPATH//:\/:/::}/%\/}
-
-typeset -U path manpath
+# Man page path
+[[ -d "$HOME/.local/share/man" ]] && export MANPATH="$HOME/.local/share/man:$MANPATH"
+[[ -d "$HOME/man" ]] && export MANPATH="$HOME/man:$MANPATH"
+[[ -n "$MANPATH" ]] && export MANPATH="${${${MANPATH//\/\///}//\/:/:}%/}"
+typeset -U manpath
 [[ -z "$MANPATH" ]] && unset MANPATH
 
 #
