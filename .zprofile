@@ -57,7 +57,6 @@ path=($^path(:a))
 [[ -d "$HOME/man" ]] && export MANPATH="$HOME/man:$MANPATH"
 [[ -n "$MANPATH" ]] && export MANPATH="${${${MANPATH//\/\///}//\/:/:}%/}"
 typeset -U manpath
-[[ -z "$MANPATH" ]] && unset MANPATH
 
 #
 # Miscellaneous user preferences
