@@ -50,7 +50,7 @@ export MAIL=${MAIL:-/var/mail/$USERNAME}
 # Path
 [[ -d "$HOME/.local/bin" ]] && export PATH="$HOME/.local/bin:$PATH"
 [[ -d "$HOME/bin" ]] && export PATH="$HOME/bin:$PATH"
-path=($^path(:a))
+typeset -U path=($^path(N^M:a))
 
 # Man page path
 [[ -d "$HOME/.local/share/man" ]] && export MANPATH="$HOME/.local/share/man:$MANPATH"
