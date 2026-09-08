@@ -2,9 +2,14 @@
 
 # Global definitions are always sourced from /etc/csh.cshrc
 
-# Change shell here if not allowed on system-level
-#if ( $?prompt && -x /bin/zsh ) then
-#	exec /bin/zsh -i
+# Change shell here if not allowed on system level
+# Also comment out TIME_STYLE below, see .zprofile
+#if ( -t 1 && -x /bin/zsh ) then
+#	if ( $?loginsh ) then
+#		exec /bin/zsh -l -i
+#	else
+#		exec /bin/zsh -i
+#	endif
 #endif
 
 # Ensure SHELL is always correctly set
