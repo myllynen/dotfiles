@@ -91,16 +91,15 @@
 ;; Linux kernel C style
 ;;
 (defconst linux-c-mode
-	'(
-	(c-mode)
+	'("K&R"
+	(c-basic-offset			. 8)
+	(tab-width			. 8)
+	(indent-tabs-mode		. t)
 	) "C mode with adjusted defaults for use with the Linux kernel." )
 (defun linux-c-mode-hook
 	()
 	(interactive)
-	(c-set-style "K&R")
-	(setq tab-width 8)
-	(setq indent-tabs-mode t)
-	(setq c-basic-offset 8)
+	(c-set-style "linux")
 	)
 (add-hook 'c-mode-hook 'linux-c-mode-hook)
 (c-add-style "linux" linux-c-mode)
@@ -110,8 +109,7 @@
 ;; Custom C++ style
 ;;
 (defconst custom-cc-mode
-	'(
-	(c-set-style "k&r")
+	'("k&r"
 	(c-basic-offset			. 4)
 	(c-comment-only-line-offset	. 0)
 	(c-offsets-alist .
