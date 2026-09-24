@@ -1,5 +1,6 @@
 # Readline options
 set bell-style visible
+set colored-stats on
 #set completion-ignore-case on
 set convert-meta off
 set expand-tilde on
@@ -10,10 +11,12 @@ set match-hidden-files off
 set output-meta on
 set show-all-if-ambiguous on
 set show-all-if-unmodified on
+set skip-completed-text on
 set visible-stats on
 
 # Completion
-TAB: menu-complete
+TAB:       menu-complete
+"\e[Z":    menu-complete-backward
 
 # Key bindings for Linux/BSD/X11/Solaris
 "\e[1~":   beginning-of-line
