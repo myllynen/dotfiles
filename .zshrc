@@ -27,7 +27,6 @@ setopt \
 	HIST_IGNORE_DUPS \
 	HIST_REDUCE_BLANKS \
 	HUP \
-	KSH_OPTION_PRINT \
 	NO_LIST_BEEP \
 	NO_LIST_TYPES \
 	MAIL_WARNING \
@@ -291,7 +290,7 @@ function mktar{,gz,bz2,xz,zstd} () {
 	[[ ! -d "$1" ]] && echo "$0: no such directory: $1" 1>&2 && return 1
 	[[ ! -x "$1" ]] && echo "$0: permission denied: $1" 1>&2 && return 1
 	[[ ! -w "$1"/.. || ! -x "$1"/.. ]] && echo "$0: permission denied: $1/.." 1>&2 && return 1
-	local dir filter location
+	local dir filter flags location
 	location="`pwd`"
 	cd "$1"
 	dir="`basename "\`pwd\`"`"
@@ -341,7 +340,7 @@ function rmws () {
 
 function jpg2pdf () {
 	mv "$1" "${1/.JPG/.jpg}" > /dev/null 2>&1
-	f="${1/.JPG/.jpg}"
+	local f="${1/.JPG/.jpg}"
 	convert -strip -auto-orient -quality 50% -resize 50% "$f" "${f/.jpg/-tmp.jpg}"
 	convert "${f/.jpg/-tmp.jpg}" "${f/.jpg/.pdf}"
 	rm -f "${f/.jpg/-tmp.jpg}"
@@ -692,9 +691,9 @@ RPROMPT='%F{yellow}${vcs_info_msg_0_}%F{reset}'
 # Display current commits
 zstyle ':vcs_info:git+post-backend:*' hooks git-status-commits
 function +vi-git-status-commits () {
-	local m=$(git branch -a | grep main > /dev/null 2>&1 && echo main || echo master)
+	local m=$(git show-ref --verify --quiet refs/heads/main 2> /dev/null && echo main || echo master)
 	local q="@{upstream}...HEAD"
-	[[ "${gitbranch}" != "$m" ]] && q="$m..."
+	[[ "${hook_com[branch]}" != "$m" ]] && q="$m..."
 	local -a x; x=($(git --no-optional-locks rev-list --left-right --count $q 2> /dev/null))
 	(( $x[1] )) && hook_com[misc]+="↓$x[1]"
 	(( $x[2] )) && hook_com[misc]+="↑$x[2]"

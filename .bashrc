@@ -7,7 +7,7 @@
 #fi
 
 # Don't bother if sourced already
-type -p mktar && return
+type mktar > /dev/null 2>&1 && return
 
 # Source global definitions
 if [ -f /etc/bashrc ]; then
@@ -87,7 +87,7 @@ function setenv () { export "$1"="$2"; }
 
 # Options
 GLOBIGNORE=.:..
-HISTCONTROL=ignoredups
+HISTCONTROL=ignoreboth
 shopt -s cdable_vars cdspell checkjobs checkwinsize cmdhist dirspell
 shopt -s histappend hostcomplete huponexit lithist mailwarn progcomp
 
@@ -294,7 +294,7 @@ function _mktar () {
 	[[ ! -d "$2" ]] && echo "$1: no such directory: $2" 1>&2 && return 1
 	[[ ! -x "$2" ]] && echo "$1: permission denied: $2" 1>&2 && return 1
 	[[ ! -w "$2"/.. || ! -x "$2"/.. ]] && echo "$1: permission denied: $2/.." 1>&2 && return 1
-	local dir filter location
+	local dir filter flags location
 	location="`pwd`"
 	cd "$2"
 	dir="`basename "\`pwd\`"`"
@@ -344,7 +344,7 @@ function rmws () {
 
 function jpg2pdf () {
 	mv "$1" "${1/.JPG/.jpg}" > /dev/null 2>&1
-	f="${1/.JPG/.jpg}"
+	local f="${1/.JPG/.jpg}"
 	convert -strip -auto-orient -quality 50% -resize 50% "$f" "${f/.jpg/-tmp.jpg}"
 	convert "${f/.jpg/-tmp.jpg}" "${f/.jpg/.pdf}"
 	rm -f "${f/.jpg/-tmp.jpg}"
@@ -361,7 +361,7 @@ function ps2mps () {
 }
 
 function pdfpw () {
-	[[ ! -r "$1" ]] && echo "Usage: $0 <file.pdf>" 1>&2 && return 1
+	[[ ! -r "$1" ]] && echo "Usage: $FUNCNAME <file.pdf>" 1>&2 && return 1
 	local old new
 	local enc_opts="-dKeyLength=128 -dEncryptionR=3"
 	echo "Enter current PDF password:"
@@ -382,10 +382,10 @@ function pdfstrip () {
 function txt2pdf () { _txt2p txt2pdf "$@"; }
 function txt2ps () { _txt2p txt2ps "$@"; }
 function _txt2p () {
-	cmd=$0 ; shift
-	[[ $# -eq 0 ]] && echo "Usage: $0 <infile>" 1>&2 && return 1
-	[[ ! -w . || ! -x . ]] && echo "$0: permission denied: `pwd`" 1>&2 && return 1
-	istext "$1" "$0: skipping" || return 1
+	cmd=$1 ; shift
+	[[ $# -eq 0 ]] && echo "Usage: $cmd <infile>" 1>&2 && return 1
+	[[ ! -w . || ! -x . ]] && echo "$cmd: permission denied: `pwd`" 1>&2 && return 1
+	istext "$1" "$cmd: skipping" || return 1
 	local fmt=${cmd/txt2}
 	enscript -BhR -f Times-Roman12 -i 4 -M A4 -N n -t "$1" -T 4 -o "$1.ps" "$1" 2>&1 | sed -e "s/ps$/$fmt/"
 	[[ $fmt = pdf ]] && ps2pdf "$1.ps" "$1.pdf" && rm -f "$1.ps" || :
@@ -400,7 +400,7 @@ function pst () {
 	[[ -n "$ptree" ]] && "$ptree" -A > /dev/null 2>&1 && asc=-A
 	[[ -z "$ptree" ]] && ptree="`command -v proctree 2>/dev/null`"
 	[[ -z "$ptree" ]] && echo "$FUNCNAME: command not found" 1>&2 && return 1
-	[[ $# -eq 0 ]] && "$ptree" $asc || $PAGER || :
+	[[ $# -eq 0 ]] && "$ptree" $asc | $PAGER || :
 	[[ $# -gt 0 ]] && "$ptree" $asc -p "$@" | $PAGER || :
 }
 

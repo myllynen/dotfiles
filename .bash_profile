@@ -1,7 +1,7 @@
 # ~/.bash_profile
 
 # Ensure SHELL is always correctly set
-[[ "${SHELL}" == *bash* ]] || export SHELL="$0"
+[[ "${SHELL}" == *bash* ]] || export SHELL="$(command -v bash)"
 
 # Do .bashrc so that common settings are always set
 [[ -f "${HOME}/.bashrc" ]] && . "${HOME}/.bashrc" || :
