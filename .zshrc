@@ -144,7 +144,7 @@ bindkey ^X^X history-beginning-search-menu
 [[ -n ${commands[lesspipe.sh]} ]] && export LESSOPEN="| lesspipe.sh %s"
 
 # ls(1) colors and other options
-eval `dircolors --sh 2> /dev/null`
+eval $(dircolors --sh 2> /dev/null)
 [[ -z "$LS_COLORS" ]] && export LS_COLORS='rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:'
 case "$OSTYPE"
 in
@@ -198,7 +198,7 @@ function cpd () {
 	bindkey -s "^M" "^X^W"
 	bindkey "^[k" kill-region
 	bindkey -s "^X^W" "^[2^[|^A cd ^A^@^[<^[k^E^@^[>^E^[k^[a^X^K"
-	cpd_var=`dirs -v | sed -e 's/\"/\\\"/g' | tr '\t' '"' | sed -e 's/^[0-9]*//g' | awk -- '{printf("%s\"\n",$0);}' | sed -e 's,\"\(~.*\)\",\1,g'`
+	cpd_var=$(dirs -v | sed -e 's/\"/\\\"/g' | tr '\t' '"' | sed -e 's/^[0-9]*//g' | awk -- '{printf("%s\"\n",$0);}' | sed -e 's,\"\(~.*\)\",\1,g')
 	vared cpd_var
 	bindkey "^M" accept-line
 	eval "$cpd_var"
@@ -225,7 +225,7 @@ function lbig () {
 
 function {dos2mac,dos2unix,mac2dos,mac2unix,unix2dos,unix2mac} () {
 	[[ $# -ne 1 ]] && echo "Usage: $0 <file>" 1>&2 && return 1
-	[[ ! -w . || ! -x . ]] && echo "$0: permission denied: `pwd`" 1>&2 && return 1
+	[[ ! -w . || ! -x . ]] && echo "$0: permission denied: $(pwd)" 1>&2 && return 1
 	istext "$1" "$0: skipping" || return 1
 	local rand="$RANDOM"
 	case "$0"
@@ -260,7 +260,7 @@ function {dos2mac,dos2unix,mac2dos,mac2unix,unix2dos,unix2mac} () {
 function {ls,un}tar () {
 	[[ $# -eq 0 ]] && echo "Usage: $0 <archive> [file(s)]" 1>&2 && return 1
 	local f="$1" filter flags=tf
-	[[ "$0" = "untar" ]] &&	flags="xf" && [[ ! -w . || ! -x . ]] && echo "$0: permission denied: `pwd`" 1>&2 && return 1
+	[[ "$0" = "untar" ]] &&	flags="xf" && [[ ! -w . || ! -x . ]] && echo "$0: permission denied: $(pwd)" 1>&2 && return 1
 	shift
 	case "$f"
 	in
@@ -291,9 +291,9 @@ function mktar{,gz,bz2,xz,zstd} () {
 	[[ ! -x "$1" ]] && echo "$0: permission denied: $1" 1>&2 && return 1
 	[[ ! -w "$1"/.. || ! -x "$1"/.. ]] && echo "$0: permission denied: $1/.." 1>&2 && return 1
 	local dir filter flags location
-	location="`pwd`"
+	location="$(pwd)"
 	cd "$1"
-	dir="`basename "\`pwd\`"`"
+	dir="$(basename "$(pwd)")"
 	if [[ "$dir" = "/" ]]
 	then
 		echo "$0: I will not process /" 1>&2
@@ -329,7 +329,7 @@ function mktar{,gz,bz2,xz,zstd} () {
 function rmws () {
 	# Remove spaces and tabs from EOLs if exist
 	[[ $# -ne 1 ]] && echo "Usage: $0 <file>" 1>&2 && return 1
-	[[ ! -w . || ! -x . ]] && echo "$0: permission denied: `pwd`" 1>&2 && return 1
+	[[ ! -w . || ! -x . ]] && echo "$0: permission denied: $(pwd)" 1>&2 && return 1
 	istext "$1" "$0: skipping" || return 1
 	grep "[ 	]$" "$1" > /dev/null 2>&1 || return 0
 	local rand="$RANDOM"
@@ -348,7 +348,7 @@ function jpg2pdf () {
 
 function ps2mps () {
 	[[ $# -eq 0 ]] && echo "Usage: $0 [--pages N] <infile>" 1>&2 && return 1
-	[[ ! -w . || ! -x . ]] && echo "$0: permission denied: `pwd`" 1>&2 && return 1
+	[[ ! -w . || ! -x . ]] && echo "$0: permission denied: $(pwd)" 1>&2 && return 1
 	local pages=4
 	[[ "$1" = "--pages" ]] && pages="$2" && shift 2
 	file "$1" | grep PostScript > /dev/null 2>&1
@@ -377,7 +377,7 @@ function pdfstrip () {
 
 function {txt2pdf,txt2ps} () {
 	[[ $# -eq 0 ]] && echo "Usage: $0 <infile>" 1>&2 && return 1
-	[[ ! -w . || ! -x . ]] && echo "$0: permission denied: `pwd`" 1>&2 && return 1
+	[[ ! -w . || ! -x . ]] && echo "$0: permission denied: $(pwd)" 1>&2 && return 1
 	istext "$1" "$0: skipping" || return 1
 	local fmt=${0/txt2}
 	enscript -BhR -f Times-Roman12 -i 4 -M A4 -N n -t "$1" -T 4 -o "$1.ps" "$1" 2>&1 | sed -e "s/ps$/$fmt/"
@@ -408,7 +408,7 @@ function killmy () {
 	for sig in HUP TERM KILL
 	do
 		echo -n " $sig"
-		pslist=$( ps ${=psargs} "`whoami`" | grep "${grepws}$1" | awk '{print $1}' | tr '\n' ' ' )
+		pslist=$( ps ${=psargs} "$(whoami)" | grep "${grepws}$1" | awk '{print $1}' | tr '\n' ' ' )
 		for proc in ${=pslist}
 		do
 			kill -"$sig" "$proc" 2> /dev/null
@@ -420,7 +420,7 @@ function killmy () {
 
 function killuser () {
 	[[ $# -ne 1 ]] && echo "Usage: $0 <user>" 1>&2 && return 1
-	[[ $UID -ne 0 ]] && [[ "$1" != "`whoami`" ]] && [[ "$OSTYPE" != *cygwin* ]] && echo "$0: permission denied: $1" 1>&2 && return 1
+	[[ $UID -ne 0 ]] && [[ "$1" != "$(whoami)" ]] && [[ "$OSTYPE" != *cygwin* ]] && echo "$0: permission denied: $1" 1>&2 && return 1
 	local pslist sig proc psargs
 	[[ "$OSTYPE" = *solaris* || "$OSTYPE" = *aix* || "$OSTYPE" = *irix* ]] && psargs=-fU
 	[[ "$OSTYPE" = *cygwin* ]] && psargs=-fu
@@ -586,21 +586,21 @@ compctl -g '*.(pdf|PDF)' + -g '*(-/) ..' pdfstrip
 compctl -g '*.(jpg|JPG)' + -g '*(-/) ..' jpg2pdf
 
 # ps(1) / kill(1) related
-compctl -s '`ps xcw -ocommand | grep -v COMMAND`' killmy
+compctl -s '$(ps xcw -ocommand | grep -v COMMAND)' killmy
 if [[ $UID -eq 0 ]]
 then
 	compctl -s "\$(ps aux | grep -v \^USER | awk '{print \$1}')" killuser
 fi
 if [[ $UID -ne 0 ]] || [[ "$OSTYPE" = *openbsd* ]]
 then
-	compctl -s '`ps xcw -ocommand | grep -v COMMAND`' + \
+	compctl -s '$(ps xcw -ocommand | grep -v COMMAND)' + \
 		-x 's[-] p[1]' -k "($signals[1,-3])" -- killall
-	compctl -s '`ps x -opid | tail -n +2`' + \
+	compctl -s '$(ps x -opid | tail -n +2)' + \
 		-x 's[-] p[1]' -k "($signals[1,-3])" -- kill
 else
-	compctl -s '`ps xacw -ocommand | grep -v COMMAND`' + \
+	compctl -s '$(ps xacw -ocommand | grep -v COMMAND)' + \
 		-x 's[-] p[1]' -k "($signals[1,-3])" -- killall
-	compctl -s '`ps xa -opid | tail -n +2`' + \
+	compctl -s '$(ps xa -opid | tail -n +2)' + \
 		-x 's[-] p[1]' -k "($signals[1,-3])" -- kill
 fi
 
@@ -610,11 +610,11 @@ then
 	if [[ $UID -eq 0 ]]
 	then
 		compctl -s "\$(ps -ef | grep -v PID | awk '{print \$1}')" killuser
-		compctl -s '`ps -eopid | tail -n +2`' + -x 's[-] p[1]' -k "($signals[1,-10])" -- kill
+		compctl -s '$(ps -eopid | tail -n +2)' + -x 's[-] p[1]' -k "($signals[1,-10])" -- kill
 	else
-		compctl -s '`ps -opid -U "\`whoami\`" | tail -n +2`' + -x 's[-] p[1]' -k "($signals[1,-10])" -- kill
+		compctl -s '$(ps -opid -U "$(whoami)" | tail -n +2)' + -x 's[-] p[1]' -k "($signals[1,-10])" -- kill
 	fi
-	compctl -s '`ps -ocomm -U "\`whoami\`" | grep -v COMMAND`' killmy
+	compctl -s '$(ps -ocomm -U "$(whoami)" | grep -v COMMAND)' killmy
 	compctl killall
 fi
 
@@ -625,9 +625,9 @@ then
 		reply=($(ps -ef | grep -v COMMAND | awk '{print $2}'))
 	}
 	compctl -K _pslist + -x 's[-] p[1]' -k "($signals[1,-10])" -- kill
-	compctl -s '`users`' killuser
+	compctl -s '$(users)' killuser
 	function _mypslist () {
-		reply=($(ps -su "`whoami`" | grep -v COMMAND | awk '{print $4}'))
+		reply=($(ps -su "$(whoami)" | grep -v COMMAND | awk '{print $4}'))
 	}
 	compctl -K _mypslist killmy
 	compctl killall

@@ -156,7 +156,7 @@ fi
 type -P lesspipe.sh > /dev/null && export LESSOPEN="| lesspipe.sh %s"
 
 # ls(1) colors and other options
-eval `dircolors --sh 2> /dev/null`
+eval $(dircolors --sh 2> /dev/null)
 [[ -z "$LS_COLORS" ]] && export LS_COLORS='rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:'
 case "$OSTYPE"
 in
@@ -219,7 +219,7 @@ function untar () { _lstar untar "$@"; }
 function _lstar () {
 	[[ $# -lt 2 ]] && echo "Usage: $1 <archive> [file(s)]" 1>&2 && return 1
 	local f="$2" filter flags=tf
-	[[ "$1" = "untar" ]] && flags="xf" && [[ ! -w . || ! -x . ]] && echo "$1: permission denied: `pwd`" 1>&2 && return 1
+	[[ "$1" = "untar" ]] && flags="xf" && [[ ! -w . || ! -x . ]] && echo "$1: permission denied: $(pwd)" 1>&2 && return 1
 	shift ; shift
 	case "$f"
 	in
@@ -252,7 +252,7 @@ function unix2dos () { _x2y unix2dos "$@"; }
 function unix2mac () { _x2y unix2mac "$@"; }
 function _x2y () {
 	[[ $# -ne 2 ]] && echo "Usage: $1 <file>" 1>&2 && return 1
-	[[ ! -w . || ! -x . ]] && echo "$1: permission denied: `pwd`" 1>&2 && return 1
+	[[ ! -w . || ! -x . ]] && echo "$1: permission denied: $(pwd)" 1>&2 && return 1
 	istext "$2" "$1: skipping" || return 1
 	local rand="$RANDOM"
 	case "$1"
@@ -295,9 +295,9 @@ function _mktar () {
 	[[ ! -x "$2" ]] && echo "$1: permission denied: $2" 1>&2 && return 1
 	[[ ! -w "$2"/.. || ! -x "$2"/.. ]] && echo "$1: permission denied: $2/.." 1>&2 && return 1
 	local dir filter flags location
-	location="`pwd`"
+	location="$(pwd)"
 	cd "$2"
-	dir="`basename "\`pwd\`"`"
+	dir="$(basename "$(pwd)")"
 	if [[ "$dir" = "/" ]]
 	then
 		echo "$1: I will not process /" 1>&2
@@ -333,7 +333,7 @@ function _mktar () {
 function rmws () {
 	# Remove spaces and tabs from EOLs if exist
 	[[ $# -ne 1 ]] && echo "Usage: $FUNCNAME <file>" 1>&2 && return 1
-	[[ ! -w . || ! -x . ]] && echo "$FUNCNAME: permission denied: `pwd`" 1>&2 && return 1
+	[[ ! -w . || ! -x . ]] && echo "$FUNCNAME: permission denied: $(pwd)" 1>&2 && return 1
 	istext "$1" "$FUNCNAME: skipping" || return 1
 	grep "[ 	]$" "$1" > /dev/null 2>&1 || return 0
 	local rand="$RANDOM"
@@ -352,7 +352,7 @@ function jpg2pdf () {
 
 function ps2mps () {
 	[[ $# -eq 0 ]] && echo "Usage: $FUNCNAME [--pages N] <infile>" 1>&2 && return 1
-	[[ ! -w . || ! -x . ]] && echo "$FUNCNAME: permission denied: `pwd`" 1>&2 && return 1
+	[[ ! -w . || ! -x . ]] && echo "$FUNCNAME: permission denied: $(pwd)" 1>&2 && return 1
 	local pages=4
 	[[ "$1" = "--pages" ]] && pages="$2" && shift 2
 	file "$1" | grep PostScript > /dev/null 2>&1
@@ -384,7 +384,7 @@ function txt2ps () { _txt2p txt2ps "$@"; }
 function _txt2p () {
 	cmd=$1 ; shift
 	[[ $# -eq 0 ]] && echo "Usage: $cmd <infile>" 1>&2 && return 1
-	[[ ! -w . || ! -x . ]] && echo "$cmd: permission denied: `pwd`" 1>&2 && return 1
+	[[ ! -w . || ! -x . ]] && echo "$cmd: permission denied: $(pwd)" 1>&2 && return 1
 	istext "$1" "$cmd: skipping" || return 1
 	local fmt=${cmd/txt2}
 	enscript -BhR -f Times-Roman12 -i 4 -M A4 -N n -t "$1" -T 4 -o "$1.ps" "$1" 2>&1 | sed -e "s/ps$/$fmt/"
@@ -396,9 +396,9 @@ function tailc () {
 }
 
 function pst () {
-	local asc ptree="`command -v pstree 2>/dev/null`"
+	local asc ptree="$(command -v pstree 2>/dev/null)"
 	[[ -n "$ptree" ]] && "$ptree" -A > /dev/null 2>&1 && asc=-A
-	[[ -z "$ptree" ]] && ptree="`command -v proctree 2>/dev/null`"
+	[[ -z "$ptree" ]] && ptree="$(command -v proctree 2>/dev/null)"
 	[[ -z "$ptree" ]] && echo "$FUNCNAME: command not found" 1>&2 && return 1
 	[[ $# -eq 0 ]] && "$ptree" $asc | $PAGER || :
 	[[ $# -gt 0 ]] && "$ptree" $asc -p "$@" | $PAGER || :
@@ -415,7 +415,7 @@ function killmy () {
 	for sig in HUP TERM KILL
 	do
 		echo -n " $sig"
-		pslist=$( ps ${psargs} "`whoami`" | grep "${grepws}$1" | awk '{print $1}' | tr '\n' ' ' )
+		pslist=$( ps ${psargs} "$(whoami)" | grep "${grepws}$1" | awk '{print $1}' | tr '\n' ' ' )
 		for proc in ${pslist}
 		do
 			kill -"$sig" "$proc" 2> /dev/null
@@ -427,7 +427,7 @@ function killmy () {
 
 function killuser () {
 	[[ $# -ne 1 ]] && echo "Usage: $FUNCNAME <user>" 1>&2 && return 1
-	[[ $UID -ne 0 ]] && [[ "$1" != "`whoami`" ]] && [[ "$OSTYPE" != *cygwin* ]] && echo "$FUNCNAME: permission denied: $1" 1>&2 && return 1
+	[[ $UID -ne 0 ]] && [[ "$1" != "$(whoami)" ]] && [[ "$OSTYPE" != *cygwin* ]] && echo "$FUNCNAME: permission denied: $1" 1>&2 && return 1
 	local pslist sig proc psargs
 	[[ "$OSTYPE" = *solaris* || "$OSTYPE" = *aix* || "$OSTYPE" = *irix* ]] && psargs=-fU
 	[[ "$OSTYPE" = *cygwin* ]] && psargs=-fu
