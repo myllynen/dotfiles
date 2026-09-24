@@ -1,10 +1,4 @@
 ;;
-;; Are we running XEmacs or Emacs?
-;;
-(defvar running-xemacs (string-match "XEmacs\\|Lucid" emacs-version))
-
-
-;;
 ;; The next lines enable UTF-8 charset
 ;;
 (prefer-coding-system 'utf-8)
@@ -19,7 +13,7 @@
 ;; Look & Feel
 ;;
 (auto-compression-mode t)
-(blink-cursor-mode nil)
+(blink-cursor-mode -1)
 (setq visible-bell t)
 (setq line-number-mode t)
 (setq column-number-mode t)
@@ -31,15 +25,14 @@
 (setq-default indicate-empty-lines t)
 (setq-default show-trailing-whitespace t)
 (cond (window-system
-	(mwheel-install)
-	(cond ((not running-xemacs) (mouse-wheel-mode 1)))
+	(mouse-wheel-mode 1)
 	(set-frame-width (selected-frame) 80)
 	(set-frame-height (selected-frame) 25)
 	))
-(cond ((not running-xemacs) (tool-bar-mode nil)))
+(tool-bar-mode -1)
 (setq frame-title-format
 	(list
-	(getenv "USER") ":" invocation-name "@" (getenv "HOSTNAME") ":%b")
+	(getenv "USER") ":" invocation-name "@" (system-name) ":%b")
 	)
 ;(setq display-time-day-and-date t)
 ;(setq display-time-24hr-format t)
@@ -50,20 +43,15 @@
 ;;
 ;; Colors
 ;;
-(cond ((not running-xemacs)
-	(global-font-lock-mode t)
-	(set-face-background 'fringe "gray")
-	(set-face-foreground 'fringe "black")
-	))
+(global-font-lock-mode t)
+(set-face-background 'fringe "gray")
+(set-face-foreground 'fringe "black")
 (font-lock-mode t)
 (cond (window-system
-	(cond ((not running-xemacs) (set-cursor-color "red")))
+	(set-cursor-color "red")
 	(set-face-background 'default "wheat")
 	(set-face-foreground 'default "black")
 	))
-(setq font-lock-use-colors t)
-(setq font-lock-use-fonts nil)
-(setq font-lock-use-maximal-decoration t)
 
 
 ;;
@@ -74,7 +62,6 @@
 (setq auto-save-default nil)
 (setq auto-save-list-file-prefix nil)
 (setq compilation-scroll-output t)
-(setq compilation-window-height 15)
 (global-set-key "\C-cc" 'compile)
 (global-set-key "\C-cg" 'goto-line)
 (global-set-key "\C-cj" 'next-error)
@@ -83,15 +70,10 @@
 (global-set-key "\C-cw" 'delete-trailing-whitespace)
 (global-set-key (read-kbd-macro "<delete>") 'delete-char)
 (global-set-key "\C-cm" (lambda () (interactive) (manual-entry (current-word))))
-(if (featurep 'xemacs)
-	(progn
-		; XEmacs
-		(paren-set-mode 'sexp)
-	)
-		; GNU Emacs
-		(show-paren-mode t)
-		(which-function-mode t)
-)
+(delete-selection-mode t)
+(which-function-mode t)
+(show-paren-mode t)
+(save-place-mode t)
 
 
 ;;

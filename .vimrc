@@ -10,7 +10,8 @@ set nocursorline             " highlight the screen line of the cursor
 set   directory=~/.cache/vim " list of directory names for the swap file
 set   errorbells             " ring the bell for error messages
 set   expandtab              " use spaces when <Tab> is inserted
-set   history=100            " number of command-lines that are remembered
+set   formatoptions+=j       " remove comment from a joined line
+set   history=200            " number of command-lines that are remembered
 set   ignorecase             " ignore case in search patterns
 set   incsearch              " highlight match while typing search pattern
 set   joinspaces             " two spaces after a period with a join command
@@ -34,14 +35,12 @@ set   splitright             " new window is put right of the current one
 set   startofline            " commands move cursor to first non-blank in line
 set   swapfile               " whether to use a swapfile for a buffer
 set notitle                  " let Vim set the title of the window
-set   ttyfast                " indicates a fast terminal connection
 set   visualbell             " use visual bell instead of beeping
 set   viminfo=""             " use .viminfo file upon startup and exiting
 set   wildmenu               " use menu for command line completion
 set   wildmode=longest:list,full " mode for 'wildchar' command-line expansion
 
 " jk is escape
-noremap jk <Esc>
 noremap! jk <Esc>
 
 " leader is minus
@@ -67,7 +66,7 @@ nnoremap <Leader>m :exec &mouse != "" ? "set mouse=" : "set mouse=a"<CR>
   \<Bar>:exec &mouse != "" ? "echo 'mouse on'" : "echo 'mouse off'"<CR>
 
 " support resizing with mouse in tmux
-if exists('$TMUX') | set ttymouse=xterm2 | endif
+if exists('$TMUX') | set ttymouse=sgr | endif
 
 " toggle line numbers on or off
 nnoremap <silent> <Leader>l :set number!<CR>
@@ -81,16 +80,6 @@ set   foldlevel=1
 set   foldmethod=indent
 set   foldnestmax=2
 nnoremap <silent> <Space> @=(foldlevel('.')?'za':"\<Space>")<CR>
-
-" handle paste automatically
-let &t_SI .= "\<Esc>[?2004h"
-let &t_EI .= "\<Esc>[?2004l"
-function! XTermPasteBegin()
-  set pastetoggle=<Esc>[201~
-  set paste
-  return ""
-endfunction
-inoremap <special> <expr> <Esc>[200~ XTermPasteBegin()
 
 if &t_Co > 2 || has("gui_running")
   syntax on                    " syntax to be loaded for current buffer
