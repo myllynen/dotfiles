@@ -3,7 +3,7 @@
 # Change shell here if not allowed on system level
 # Also comment out TIME_STYLE below, see .zprofile
 #if [ -t 1 -a -x /bin/zsh ]; then
-#  shopt -q login_shell && exec /bin/zsh -l -l || exec /bin/zsh -i
+#  shopt -q login_shell && exec /bin/zsh -l -i || exec /bin/zsh -i
 #fi
 
 # Don't bother if sourced already
