@@ -3,11 +3,12 @@
 # Don't bother if sourced already
 [[ -n "$TIME_STYLE" ]] && return
 
-# Source /etc/profile like other shells using sh emulation mode
+# Source profile files
 _src_etc_profile() {
 	[[ "$OSTYPE" = *cygwin* ]] && . /etc/zprofile
 	emulate -L sh
 	[[ "$OSTYPE" != *cygwin* && -f /etc/profile ]] && . /etc/profile
+	[[ -f "$HOME/.config/shell/profile.sh" ]] && . "$HOME/.config/shell/profile.sh"
 }
 _src_etc_profile
 unset -f _src_etc_profile

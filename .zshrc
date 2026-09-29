@@ -634,7 +634,7 @@ then
 fi
 
 # Use local completions (if any)
-[[ -d $HOME/.zlocal ]] && fpath=($HOME/.zlocal $fpath)
+[[ -d "$HOME/.zlocal" ]] && fpath=("$HOME/.zlocal" $fpath)
 
 # Use compsys - overrides all compctl rules!
 autoload -Uz compinit

@@ -9,12 +9,15 @@
 # Don't bother if sourced already
 type mktar > /dev/null 2>&1 && return
 
-# Source global definitions
+# Source global and custom definitions
 if [ -f /etc/bashrc ]; then
 	. /etc/bashrc
 fi
 if [ -f /etc/bash.bashrc ]; then
 	. /etc/bash.bashrc
+fi
+if [ -f "$HOME/.config/shell/profile.sh" ]; then
+	. "$HOME/.config/shell/profile.sh"
 fi
 
 # Default umask

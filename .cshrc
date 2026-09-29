@@ -18,6 +18,11 @@ if ( $?SHELL == 0 || { eval 'if ! ( $SHELL =~ *csh* ) exit 0' } ) setenv SHELL "
 # Make OSTYPE like on other shells
 setenv OSTYPE "`uname -s | tr '[:upper:]' '[:lower:]'`"
 
+# Source custom definitions
+if ( -f "${HOME}/.config/shell/profile.csh" ) then
+	source "${HOME}/.config/shell/profile.csh"
+endif
+
 # Default umask
 umask 027
 
